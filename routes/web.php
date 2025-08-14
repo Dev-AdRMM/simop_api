@@ -7,5 +7,3 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
-Route::post('/mkesh/callback', [MkeshCallbackController::class, 'handle']);
