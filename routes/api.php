@@ -14,7 +14,7 @@ Route::post('/process-payment', [MpesaPaymentController::class, 'processPayment'
 
 
 Route::prefix('v1/mkesh')->group(function () {
-    Route::post('/debit', [MkeshController::class, 'debit']);
-    Route::post('/status', [MkeshController::class, 'status']);
-    Route::post('/callback', [MkeshController::class, 'callback']);
+    Route::post('/debit', [MkeshPaymentController::class, 'debit']);
+    Route::post('/status', [MkeshPaymentController::class, 'status']);
+    Route::post('/callback', [MkeshPaymentController::class, 'callback']);
 });
