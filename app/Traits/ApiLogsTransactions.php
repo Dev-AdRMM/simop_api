@@ -4,7 +4,7 @@ namespace App\Traits;
 
 use App\Models\SimopApiLogsTransactions;
 
-trait LogsApi
+trait ApiLogsTransactions
 {
     public function logApi($endpoint, $method, $headers, $payload, $response = null)
     {
