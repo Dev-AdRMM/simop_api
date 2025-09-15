@@ -7,11 +7,11 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
 use App\Services\PaymentGateways\MkeshPaymentService;
-use App\Traits\SimopApiLogsTransactions;
+use App\Traits\ApiLogsTransactions;
 
 class MkeshPaymentController extends Controller
 {
-    use SimopApiLogsTransactions;
+    use ApiLogsTransactions;
 
     protected $mkesh;
 
