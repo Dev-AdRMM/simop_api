@@ -4,13 +4,15 @@ namespace App\Http\Controllers\Api;
 
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
 use App\Services\PaymentGateways\MkeshPaymentService;
-use App\Http\Controllers\Controller;
-
+use App\Traits\SimopApiLogsTransactions;
 
 class MkeshPaymentController extends Controller
 {
+    use SimopApiLogsTransactions;
+
     protected $mkesh;
 
     public function __construct(MkeshPaymentService $mkesh)
@@ -35,6 +37,15 @@ class MkeshPaymentController extends Controller
             $request->transaction_id
         );
 
+        // salvar log
+        $this->logApi(
+            '/api/v1/mkesh/debit',
+            $request->method(),
+            $request->headers->all(),
+            $request->getContent(),
+            $response
+        );
+
         return response($response, 200)
             ->header('Content-Type', 'application/xml');
     }
@@ -50,6 +61,15 @@ class MkeshPaymentController extends Controller
 
         $response = $this->mkesh->getTransactionStatus($request->transaction_id);
 
+        // salvar log
+        $this->logApi(
+            '/api/v1/mkesh/status',
+            $request->method(),
+            $request->headers->all(),
+            $request->getContent(),
+            $response
+        );
+
         return response($response, 200)
             ->header('Content-Type', 'application/xml');
     }
@@ -62,7 +82,14 @@ class MkeshPaymentController extends Controller
         $xmlContent = $request->getContent();
         Log::info("Callback recebido do mKesh", ['xml' => $xmlContent]);
 
-        // ⚠️ Aqui você pode salvar no banco de dados o status da transação
+        // salvar log no banco
+        $this->logApi(
+            '/api/v1/mkesh/callback',
+            $request->method(),
+            $request->headers->all(),
+            $xmlContent,
+            '<response>ACKNOWLEDGED</response>'
+        );
 
         $response = <<<XML
             <?xml version="1.0" encoding="UTF-8"?>
