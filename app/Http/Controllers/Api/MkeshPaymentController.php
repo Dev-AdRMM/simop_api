@@ -94,6 +94,22 @@ class MkeshPaymentController extends Controller
         $xmlContent = $request->getContent();
         Log::info("Callback Mkesh recebido", ['xml' => $xmlContent]);
 
+        // Parse XML
+        $xml = simplexml_load_string($xmlContent);
+        $transactionId = (string) $xml->transactionid ?? null;
+        $externalTransactionId = (string) $xml->externaltransactionid ?? null;
+        $status = (string) $xml->status ?? 'RECEIVED';
+
+        // Atualiza transação existente
+        if ($externalTransactionId) {
+            Transaction::where('transaction_id', $externalTransactionId)
+                ->update([
+                    'status' => strtolower($status),
+                    'provider_response' => $xmlContent,
+                ]);
+        }
+
+        // Salva log (com IDs corretos)
         $this->logApi(
             'mkesh',
             '/api/v1/mkesh/callback',
@@ -101,7 +117,8 @@ class MkeshPaymentController extends Controller
             $request->headers->all(),
             $xmlContent,
             '<response>ACKNOWLEDGED</response>',
-            'RECEIVED'
+            $status,
+            $externalTransactionId
         );
 
         $response = <<<XML

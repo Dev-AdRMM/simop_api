@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('msisdn'); // número do cliente
             $table->decimal('amount', 12, 2); // valor
             $table->string('status')->default('pending'); // pending, success, failed
+            $table->longText('request_payload')->nullable(); // payload enviado
             $table->text('provider_response')->nullable(); // XML/JSON do provedor
 
             $table->timestamps();
