@@ -30,17 +30,27 @@ trait ApiLogsTransactions
         ]);
 
         if ($transactionId) {
-        // Se já existe transação -> atualiza
-        return Transaction::updateOrCreate(
-            ['transaction_id' => $transactionId, 'wallet' => $wallet],
-            [
-                'msisdn'            => $msisdn,
-                'amount'            => $amount,
-                'status'            => $status,
-                'provider_response' => $response,
-            ]
-        );
-    }
+                // Recupera a transação existente
+                $transaction = Transaction::where('transaction_id', $transactionId)
+                    ->where('wallet', $wallet)
+                    ->first();
+
+                if ($transaction) {
+                    $updateData = [
+                        'status'            => $status,
+                        'provider_response' => $response,
+                    ];
+                    if ($msisdn) {
+                        $updateData['msisdn'] = $msisdn;
+                    }
+                    if ($amount) {
+                        $updateData['amount'] = $amount;
+                    }
+
+                    $transaction->update($updateData);
+                    return $transaction;
+                }
+        }
 
         // 🔹 Salva no banco (transactions)
         return Transaction::create([
