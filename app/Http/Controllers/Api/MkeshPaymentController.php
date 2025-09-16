@@ -67,10 +67,11 @@ class MkeshPaymentController extends Controller
 
         $response = $this->mkesh->getTransactionStatus($request->transaction_id);
 
+        // Atualiza a transação existente
         Transaction::where('transaction_id', $request->transaction_id)
             ->update(['provider_response' => $response]);
 
-        // salvar log
+        // Salva log (sem duplicar)
         $this->logApi(
             'mkesh',
             '/api/v1/mkesh/status',
@@ -81,7 +82,7 @@ class MkeshPaymentController extends Controller
             'CHECKED',
             $request->transaction_id
         );
-
+        
         return response($response, 200)
             ->header('Content-Type', 'application/xml');
     }

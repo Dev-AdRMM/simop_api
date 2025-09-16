@@ -24,11 +24,23 @@ trait ApiLogsTransactions
             'endpoint' => $endpoint,
             'method'   => $method,
             'headers'  => $headers,
-            // 'headers'  => json_encode($headers),
             'payload'  => $payload,
             'response' => $response,
             'status'   => $status,
         ]);
+
+        if ($transactionId) {
+        // Se já existe transação -> atualiza
+        return Transaction::updateOrCreate(
+            ['transaction_id' => $transactionId, 'wallet' => $wallet],
+            [
+                'msisdn'            => $msisdn,
+                'amount'            => $amount,
+                'status'            => $status,
+                'provider_response' => $response,
+            ]
+        );
+    }
 
         // 🔹 Salva no banco (transactions)
         return Transaction::create([
