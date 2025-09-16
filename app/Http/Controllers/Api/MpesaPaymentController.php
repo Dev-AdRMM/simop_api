@@ -17,6 +17,21 @@ class MpesaPaymentController extends Controller
 
     public function processPayment(Request $request)
     {
+
+        // $this->logApi(
+        //     'mpesa',
+        //     '/api/v1/mpesa/debit',
+        //     $request->method(),
+        //     $request->headers->all(),
+        //     $request->all(),
+        //     $response,
+        //     'SENT',
+        //     $request->transaction_id,
+        //     $request->msisdn,
+        //     $request->amount
+        // );
+
+
         try {
             $request->validate([
                 'phone_number' => 'required|regex:/^258\d{9}$/',
@@ -50,3 +65,6 @@ class MpesaPaymentController extends Controller
     }
 
 }
+
+
+

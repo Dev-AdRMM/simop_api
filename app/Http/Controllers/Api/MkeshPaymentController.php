@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
 use App\Services\PaymentGateways\MkeshPaymentService;
 use App\Traits\ApiLogsTransactions;
+use App\Models\Transaction;
 
 class MkeshPaymentController extends Controller
 {
@@ -37,13 +38,18 @@ class MkeshPaymentController extends Controller
             $request->transaction_id
         );
 
-        // salvar log
+        // 🔹 Usa Trait
         $this->logApi(
+            'mkesh',
             '/api/v1/mkesh/debit',
             $request->method(),
             $request->headers->all(),
-            $request->getContent(),
-            $response
+            $request->all(),
+            $response,
+            'SENT',
+            $request->transaction_id,
+            $request->msisdn,
+            $request->amount
         );
 
         return response($response, 200)
@@ -61,13 +67,19 @@ class MkeshPaymentController extends Controller
 
         $response = $this->mkesh->getTransactionStatus($request->transaction_id);
 
+        Transaction::where('transaction_id', $request->transaction_id)
+            ->update(['provider_response' => $response]);
+
         // salvar log
         $this->logApi(
+            'mkesh',
             '/api/v1/mkesh/status',
             $request->method(),
             $request->headers->all(),
-            $request->getContent(),
-            $response
+            $request->all(),
+            $response,
+            'CHECKED',
+            $request->transaction_id
         );
 
         return response($response, 200)
@@ -80,15 +92,16 @@ class MkeshPaymentController extends Controller
     public function callback(Request $request)
     {
         $xmlContent = $request->getContent();
-        Log::info("Callback recebido do mKesh", ['xml' => $xmlContent]);
+        Log::info("Callback Mkesh recebido", ['xml' => $xmlContent]);
 
-        // salvar log no banco
         $this->logApi(
+            'mkesh',
             '/api/v1/mkesh/callback',
             $request->method(),
             $request->headers->all(),
             $xmlContent,
-            '<response>ACKNOWLEDGED</response>'
+            '<response>ACKNOWLEDGED</response>',
+            'RECEIVED'
         );
 
         $response = <<<XML
