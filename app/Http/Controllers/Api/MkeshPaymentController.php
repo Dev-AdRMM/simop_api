@@ -67,22 +67,34 @@ class MkeshPaymentController extends Controller
 
         $response = $this->mkesh->getTransactionStatus($request->transaction_id);
 
+        // Extrai o <status> do XML
+        $xml = simplexml_load_string($response);
+        $providerStatus = null;
+        if ($xml && isset($xml->status)) {
+            $providerStatus = strtolower((string) $xml->status); // "successful" ou "failed"
+        }
+
         // Atualiza a transação existente
         Transaction::where('transaction_id', $request->transaction_id)
-            ->update(['provider_response' => $response]);
+            ->update([
+                'provider_response' => $response,
+                'status' => $providerStatus ?? 'checked', // fallback caso não consiga extrair
+            ]);
+
 
         // Salva log (sem duplicar)
         $this->logApi(
-            'mkesh',
-            '/api/v1/mkesh/status',
-            $request->method(),
-            $request->headers->all(),
-            $request->all(),
-            $response,
-            'CHECKED',
-            $request->transaction_id
+                'mkesh',
+                '/api/v1/mkesh/status',
+                $request->method(),
+                $request->headers->all(),
+                $request->all(),
+                $response,
+                $providerStatus ?? 'CHECKED',
+                $request->transaction_id
         );
-        
+
+
         return response($response, 200)
             ->header('Content-Type', 'application/xml');
     }
