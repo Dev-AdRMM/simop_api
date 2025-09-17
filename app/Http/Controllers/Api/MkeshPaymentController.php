@@ -59,6 +59,7 @@ class MkeshPaymentController extends Controller
     /**
      * Consulta status de uma transação
      */
+
     public function status(Request $request)
     {
         $request->validate([
@@ -67,45 +68,55 @@ class MkeshPaymentController extends Controller
 
         $response = $this->mkesh->getTransactionStatus($request->transaction_id);
 
-        // Extrai o <status> do XML
+        // 🔹 Tenta interpretar XML
         $xml = simplexml_load_string($response);
         $providerStatus = null;
 
         if ($xml && isset($xml->status)) {
-            $providerStatus = strtolower((string) $xml->status); // "successful" ou "failed"
+            // Caso sucesso ou falha normal
+            $providerStatus = strtolower((string) $xml->status);
         } elseif ($xml && isset($xml['errorcode'])) {
-            // Caso seja erro do provedor
-            $providerStatus = 'not_found';
+            // 🔹 Caso de erro do provedor
+            $errorCode = (string) $xml['errorcode'];
+
+            // Loga, mas não salva nada no banco
+            Log::error("[mkesh] Erro na consulta de transação", [
+                'transaction_id' => $request->transaction_id,
+                'error_code'     => $errorCode,
+                'response'       => $response,
+            ]);
+
+            // Retorna o XML de erro diretamente para o cliente
+            return response($response, 404)
+                ->header('Content-Type', 'application/xml');
         }
 
-         $transaction = Transaction::where('transaction_id', $request->transaction_id)->first();
+        // 🔹 Atualiza a transação só se existir localmente
+        $transaction = Transaction::where('transaction_id', $request->transaction_id)->first();
 
         if ($transaction) {
-            // Atualiza se existir
             $transaction->update([
                 'provider_response' => $response,
-                'status' => $providerStatus ?? 'checked',
+                'status'            => $providerStatus ?? 'checked',
             ]);
         } else {
-            // Não insere nada se não existir no banco → só loga
             Log::warning("Consulta de transação inexistente no banco/local", [
                 'transaction_id' => $request->transaction_id,
-                'response' => $response
+                'response'       => $response,
             ]);
         }
 
-        // Salva log (sem duplicar)
+        // 🔹 Log no trait (sem tentar criar quando msisdn/amount não existem)
         $this->logApi(
-                'mkesh',
-                '/api/v1/mkesh/status',
-                $request->method(),
-                $request->headers->all(),
-                $request->all(),
-                $response,
-                $providerStatus ?? 'CHECKED',
-                $request->transaction_id
+            'mkesh',
+            '/api/v1/mkesh/status',
+            $request->method(),
+            $request->headers->all(),
+            $request->all(),
+            $response,
+            $providerStatus ?? 'CHECKED',
+            $request->transaction_id
         );
-
 
         return response($response, 200)
             ->header('Content-Type', 'application/xml');
