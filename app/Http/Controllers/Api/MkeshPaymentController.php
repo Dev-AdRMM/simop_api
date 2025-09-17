@@ -70,17 +70,29 @@ class MkeshPaymentController extends Controller
         // Extrai o <status> do XML
         $xml = simplexml_load_string($response);
         $providerStatus = null;
+
         if ($xml && isset($xml->status)) {
             $providerStatus = strtolower((string) $xml->status); // "successful" ou "failed"
+        } elseif ($xml && isset($xml['errorcode'])) {
+            // Caso seja erro do provedor
+            $providerStatus = 'not_found';
         }
 
-        // Atualiza a transação existente
-        Transaction::where('transaction_id', $request->transaction_id)
-            ->update([
-                'provider_response' => $response,
-                'status' => $providerStatus ?? 'checked', // fallback caso não consiga extrair
-            ]);
+         $transaction = Transaction::where('transaction_id', $request->transaction_id)->first();
 
+        if ($transaction) {
+            // Atualiza se existir
+            $transaction->update([
+                'provider_response' => $response,
+                'status' => $providerStatus ?? 'checked',
+            ]);
+        } else {
+            // Não insere nada se não existir no banco → só loga
+            Log::warning("Consulta de transação inexistente no banco/local", [
+                'transaction_id' => $request->transaction_id,
+                'response' => $response
+            ]);
+        }
 
         // Salva log (sem duplicar)
         $this->logApi(
