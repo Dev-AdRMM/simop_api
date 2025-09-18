@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TransactionController;
 
 // Admin Routes
 Route::view('/', 'simop_serverSide/pages/dashboard/index');
@@ -17,8 +18,10 @@ Route::view('/transactions/mpesa', 'simop_serverSide/pages/transactions/mpesa');
 Route::view('/transactions/emola', 'simop_serverSide/pages/transactions/emola');
 Route::view('/transactions/mkesh', 'simop_serverSide/pages/transactions/mkesh');
 
+Route::get('/transactions/data', [TransactionController::class, 'getData'])->name('transactions.data');
+
 #wallets
-Route::view('/wallet/emola/index', 'simop_serverSide/pages/wallets/index');
+Route::view('/wallet/index', 'simop_serverSide/pages/wallets/index');
 Route::view('/wallet/mpesa', 'simop_serverSide/pages/wallets/mpesa');
 Route::view('/wallet/emola', 'simop_serverSide/pages/wallets/emola');
 Route::view('/wallet/mkesh', 'simop_serverSide/pages/wallets/mkesh');

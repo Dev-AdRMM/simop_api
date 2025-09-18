@@ -12,6 +12,13 @@ class Transaction extends Model
         'msisdn',
         'amount',
         'status',
+        'request_payload',
         'provider_response',
+    ];
+
+    // 🔹 Garante que as datas saem formatadas no JSON
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
 }

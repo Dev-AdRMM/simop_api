@@ -1,8 +1,6 @@
 @extends('simop_serverSide/_layout')
 
 <script src="{{ asset('/js/vendor/jquery-3.6.0.min.js') }}"></script>
-{{-- <script src="{{ asset('/js/Server_Side/Product/Categories.ajax.js') }}"></script> --}}
-
 
 @section('content')
     <!--start content-->
@@ -15,7 +13,7 @@
                     <ol class="breadcrumb mb-0 p-0">
                         <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">Order details</li>
+                        <li class="breadcrumb-item active" aria-current="page">Transações</li>
                     </ol>
                 </nav>
             </div>
@@ -38,263 +36,357 @@
 
         <div class="card">
             <div class="card-header py-3">
-                <div class="row g-3 align-items-center">
-                    <div class="col-12 col-lg-4 col-md-6 me-auto">
-                        <h5 class="mb-1">Tue, Apr 15, 2020, 8:44PM</h5>
-                        <p class="mb-0">Order ID : #8965327</p>
+                <div class="row g-3">
+                    <div class="col-lg-3 col-md-6 me-auto">
+                        <div class="ms-auto position-relative">
+                            <div class="position-absolute top-50 translate-middle-y search-icon px-3"><i
+                                    class="bi bi-search"></i></div>
+                            <input class="form-control ps-5" type="text" placeholder="Search Payment">
+                        </div>
                     </div>
-                    <div class="col-12 col-lg-3 col-6 col-md-3">
+                    <div class="col-lg-2 col-6 col-md-3">
                         <select class="form-select">
-                            <option>Change Status</option>
-                            <option>Awaiting Payment</option>
-                            <option>Confirmed</option>
-                            <option>Shipped</option>
-                            <option>Delivered</option>
+                            <option>Status</option>
+                            <option>Active</option>
+                            <option>Disabled</option>
+                            <option>Pending</option>
+                            <option>Show All</option>
                         </select>
                     </div>
-                    <div class="col-12 col-lg-3 col-6 col-md-3">
-                        <button type="button" class="btn btn-primary">Save</button>
-                        <button type="button" class="btn btn-secondary"><i class="bi bi-printer-fill"></i> Print</button>
+                    <div class="col-lg-2 col-6 col-md-3">
+                        <select class="form-select">
+                            <option>Show 10</option>
+                            <option>Show 30</option>
+                            <option>Show 50</option>
+                        </select>
                     </div>
                 </div>
             </div>
             <div class="card-body">
-                <div class="row row-cols-1 row-cols-xl-2 row-cols-xxl-3">
-                    <div class="col">
-                        <div class="card border shadow-none radius-10">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="icon-box bg-light-primary border-0">
-                                        <i class="bi bi-person text-primary"></i>
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#ID</th>
+                                <th>Customer Name</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Method</th>
+                                <th>Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#8562</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3 cursor-pointer">
+                                        <img src="{{asset('template_serverSide/assets/images/avatars/avatar-1.jpg')}}" class="rounded-circle" width="44"
+                                            height="44" alt="">
+                                        <div class="">
+                                            <p class="mb-0">Thomas Hardy</p>
+                                        </div>
                                     </div>
-                                    <div class="info">
-                                        <h6 class="mb-2">Customer</h6>
-                                        <p class="mb-1">Jhon Michle</p>
-                                        <p class="mb-1">jhon@_78@example.com</p>
-                                        <p class="mb-1">+91-9910XXXXXX</p>
+                                </td>
+                                <td>$854.00</td>
+                                <td><span class="badge rounded-pill alert-success">Paid</span></td>
+                                <td>Master Card</td>
+                                <td>14 Apr 2020</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3 fs-6">
+                                        <a href="javascript:;" class="text-primary" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title="" data-bs-original-title="View detail"
+                                            aria-label="Views"><i class="bi bi-eye-fill"></i></a>
+                                        <a href="javascript:;" class="text-warning" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title="" data-bs-original-title="Edit info"
+                                            aria-label="Edit"><i class="bi bi-pencil-fill"></i></a>
+                                        <a href="javascript:;" class="text-danger" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title="" data-bs-original-title="Delete"
+                                            aria-label="Delete"><i class="bi bi-trash-fill"></i></a>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card border shadow-none radius-10">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="icon-box bg-light-success border-0">
-                                        <i class="bi bi-truck text-success"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#7568</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3 cursor-pointer">
+                                        <img src="{{asset('template_serverSide/assets/images/avatars/avatar-2.png')}}" class="rounded-circle" width="44"
+                                            height="44" alt="">
+                                        <div class="">
+                                            <p class="mb-0">Victoria Hardy</p>
+                                        </div>
                                     </div>
-                                    <div class="info">
-                                        <h6 class="mb-2">Order info</h6>
-                                        <p class="mb-1"><strong>Shipping</strong> : Red Express</p>
-                                        <p class="mb-1"><strong>Pay Method</strong> : Master Card</p>
-                                        <p class="mb-1"><strong>Status</strong> : New</p>
+                                </td>
+                                <td>$653.00</td>
+                                <td><span class="badge rounded-pill alert-success">Paid</span></td>
+                                <td>Master Card</td>
+                                <td>16 Apr 2020</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3 fs-6">
+                                        <a href="javascript:;" class="text-primary" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title="" data-bs-original-title="View detail"
+                                            aria-label="Views"><i class="bi bi-eye-fill"></i></a>
+                                        <a href="javascript:;" class="text-warning" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title="" data-bs-original-title="Edit info"
+                                            aria-label="Edit"><i class="bi bi-pencil-fill"></i></a>
+                                        <a href="javascript:;" class="text-danger" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title="" data-bs-original-title="Delete"
+                                            aria-label="Delete"><i class="bi bi-trash-fill"></i></a>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card border shadow-none radius-10">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="icon-box bg-light-danger border-0">
-                                        <i class="bi bi-geo-alt text-danger"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#3265</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3 cursor-pointer">
+                                        <img src="{{asset('template_serverSide/assets/images/avatars/avatar-3.png')}}" class="rounded-circle"
+                                            width="44" height="44" alt="">
+                                        <div class="">
+                                            <p class="mb-0">Maria Anders</p>
+                                        </div>
                                     </div>
-                                    <div class="info">
-                                        <h6 class="mb-2">Deliver to</h6>
-                                        <p class="mb-1"><strong>City</strong> : Sydney, Australia</p>
-                                        <p class="mb-1"><strong>Address</strong> : 47-A, Street Name, <br>Sydney Australia
-                                        </p>
+                                </td>
+                                <td>$152.00</td>
+                                <td><span class="badge rounded-pill alert-danger">Failed</span></td>
+                                <td>Master Card</td>
+                                <td>18 Apr 2020</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3 fs-6">
+                                        <a href="javascript:;" class="text-primary" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title=""
+                                            data-bs-original-title="View detail" aria-label="Views"><i
+                                                class="bi bi-eye-fill"></i></a>
+                                        <a href="javascript:;" class="text-warning" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title="" data-bs-original-title="Edit info"
+                                            aria-label="Edit"><i class="bi bi-pencil-fill"></i></a>
+                                        <a href="javascript:;" class="text-danger" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title="" data-bs-original-title="Delete"
+                                            aria-label="Delete"><i class="bi bi-trash-fill"></i></a>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div><!--end row-->
-
-                <div class="row">
-                    <div class="col-12 col-lg-8">
-                        <div class="card border shadow-none radius-10">
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table align-middle mb-0">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Product</th>
-                                                <th>Unit Price</th>
-                                                <th>Quantity</th>
-                                                <th>Total</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <div class="orderlist">
-                                                        <a class="d-flex align-items-center gap-2" href="javascript:;">
-                                                            <div class="product-box">
-                                                                <img src="{{asset('template_serverSide/assets/images/products/01.png')}}" alt="">
-                                                            </div>
-                                                            <div>
-                                                                <P class="mb-0 product-title">Men White Polo T-shirt</P>
-                                                            </div>
-                                                        </a>
-                                                    </div>
-                                                </td>
-                                                <td>$35.00</td>
-                                                <td>2</td>
-                                                <td>$70.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <div class="orderlist">
-                                                        <a class="d-flex align-items-center gap-2" href="javascript:;">
-                                                            <div class="product-box">
-                                                                <img src="{{asset('template_serverSide/assets/images/products/02.png')}}" alt="">
-                                                            </div>
-                                                            <div>
-                                                                <P class="mb-0 product-title">Formal Black Coat Pant</P>
-                                                            </div>
-                                                        </a>
-                                                    </div>
-                                                </td>
-                                                <td>$25.00</td>
-                                                <td>1</td>
-                                                <td>$25.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <div class="orderlist">
-                                                        <a class="d-flex align-items-center gap-2" href="javascript:;">
-                                                            <div class="product-box">
-                                                                <img src="{{asset('template_serverSide/assets/images/products/03.png')}}" alt="">
-                                                            </div>
-                                                            <div>
-                                                                <P class="mb-0 product-title">Blue Shade Jeans</P>
-                                                            </div>
-                                                        </a>
-                                                    </div>
-                                                </td>
-                                                <td>$65.00</td>
-                                                <td>2</td>
-                                                <td>$130.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <div class="orderlist">
-                                                        <a class="d-flex align-items-center gap-2" href="javascript:;">
-                                                            <div class="product-box">
-                                                                <img src="{{asset('template_serverSide/assets/images/products/04.png')}}" alt="">
-                                                            </div>
-                                                            <div>
-                                                                <P class="mb-0 product-title">Yellow Winter Jacket for Men
-                                                                </P>
-                                                            </div>
-                                                        </a>
-                                                    </div>
-                                                </td>
-                                                <td>$56.00</td>
-                                                <td>1</td>
-                                                <td>$56.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <div class="orderlist">
-                                                        <a class="d-flex align-items-center gap-2" href="javascript:;">
-                                                            <div class="product-box">
-                                                                <img src="{{asset('template_serverSide/assets/images/products/05.png')}}" alt="">
-                                                            </div>
-                                                            <div>
-                                                                <P class="mb-0 product-title">Men Sports Shoes Nike</P>
-                                                            </div>
-                                                        </a>
-                                                    </div>
-                                                </td>
-                                                <td>$85.00</td>
-                                                <td>1</td>
-                                                <td>$85.00</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-lg-4">
-                        <div class="card border shadow-none bg-light radius-10">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center mb-4">
-                                    <div>
-                                        <h5 class="mb-0">Order Summary</h5>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#8965</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3 cursor-pointer">
+                                        <img src="{{asset('template_serverSide/assets/images/avatars/avatar-4.png')}}" class="rounded-circle"
+                                            width="44" height="44" alt="">
+                                        <div class="">
+                                            <p class="mb-0">Martin Loother</p>
+                                        </div>
                                     </div>
-                                    <div class="ms-auto">
-                                        <button type="button" class="btn alert-success radius-30 px-4">Confirmed</button>
+                                </td>
+                                <td>$185.00</td>
+                                <td><span class="badge rounded-pill alert-success">Paid</span></td>
+                                <td>Master Card</td>
+                                <td>19 Apr 2020</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3 fs-6">
+                                        <a href="javascript:;" class="text-primary" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title=""
+                                            data-bs-original-title="View detail" aria-label="Views"><i
+                                                class="bi bi-eye-fill"></i></a>
+                                        <a href="javascript:;" class="text-warning" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title="" data-bs-original-title="Edit info"
+                                            aria-label="Edit"><i class="bi bi-pencil-fill"></i></a>
+                                        <a href="javascript:;" class="text-danger" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title="" data-bs-original-title="Delete"
+                                            aria-label="Delete"><i class="bi bi-trash-fill"></i></a>
                                     </div>
-                                </div>
-                                <div class="d-flex align-items-center mb-3">
-                                    <div>
-                                        <p class="mb-0">Subtotal</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#4256</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3 cursor-pointer">
+                                        <img src="{{asset('template_serverSide/assets/images/avatars/avatar-5.png')}}" class="rounded-circle"
+                                            width="44" height="44" alt="">
+                                        <div class="">
+                                            <p class="mb-0">Thomas Hardy</p>
+                                        </div>
                                     </div>
-                                    <div class="ms-auto">
-                                        <h5 class="mb-0">$198.00</h5>
+                                </td>
+                                <td>$452.00</td>
+                                <td><span class="badge rounded-pill alert-warning">Pending</span></td>
+                                <td>Master Card</td>
+                                <td>20 Apr 2020</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3 fs-6">
+                                        <a href="javascript:;" class="text-primary" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title=""
+                                            data-bs-original-title="View detail" aria-label="Views"><i
+                                                class="bi bi-eye-fill"></i></a>
+                                        <a href="javascript:;" class="text-warning" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title="" data-bs-original-title="Edit info"
+                                            aria-label="Edit"><i class="bi bi-pencil-fill"></i></a>
+                                        <a href="javascript:;" class="text-danger" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title="" data-bs-original-title="Delete"
+                                            aria-label="Delete"><i class="bi bi-trash-fill"></i></a>
                                     </div>
-                                </div>
-                                <div class="d-flex align-items-center mb-3">
-                                    <div>
-                                        <p class="mb-0">Shipping Price</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#3245</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3 cursor-pointer">
+                                        <img src="{{asset('template_serverSide/assets/images/avatars/avatar-6.png')}}" class="rounded-circle"
+                                            width="44" height="44" alt="">
+                                        <div class="">
+                                            <p class="mb-0">Victoria Hardy</p>
+                                        </div>
                                     </div>
-                                    <div class="ms-auto">
-                                        <h5 class="mb-0">$0.00</h5>
+                                </td>
+                                <td>$352.00</td>
+                                <td><span class="badge rounded-pill alert-success">Paid</span></td>
+                                <td>Master Card</td>
+                                <td>22 Apr 2020</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3 fs-6">
+                                        <a href="javascript:;" class="text-primary" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title=""
+                                            data-bs-original-title="View detail" aria-label="Views"><i
+                                                class="bi bi-eye-fill"></i></a>
+                                        <a href="javascript:;" class="text-warning" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title="" data-bs-original-title="Edit info"
+                                            aria-label="Edit"><i class="bi bi-pencil-fill"></i></a>
+                                        <a href="javascript:;" class="text-danger" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title="" data-bs-original-title="Delete"
+                                            aria-label="Delete"><i class="bi bi-trash-fill"></i></a>
                                     </div>
-                                </div>
-                                <div class="d-flex align-items-center mb-3">
-                                    <div>
-                                        <p class="mb-0">Taxes</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#6589</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3 cursor-pointer">
+                                        <img src="{{asset('template_serverSide/assets/images/avatars/avatar-7.png')}}" class="rounded-circle"
+                                            width="44" height="44" alt="">
+                                        <div class="">
+                                            <p class="mb-0">Maria Anders</p>
+                                        </div>
                                     </div>
-                                    <div class="ms-auto">
-                                        <h5 class="mb-0">$24.00</h5>
+                                </td>
+                                <td>$452.00</td>
+                                <td><span class="badge rounded-pill alert-danger">Failed</span></td>
+                                <td>Master Card</td>
+                                <td>25 Apr 2020</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3 fs-6">
+                                        <a href="javascript:;" class="text-primary" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title=""
+                                            data-bs-original-title="View detail" aria-label="Views"><i
+                                                class="bi bi-eye-fill"></i></a>
+                                        <a href="javascript:;" class="text-warning" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title="" data-bs-original-title="Edit info"
+                                            aria-label="Edit"><i class="bi bi-pencil-fill"></i></a>
+                                        <a href="javascript:;" class="text-danger" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title="" data-bs-original-title="Delete"
+                                            aria-label="Delete"><i class="bi bi-trash-fill"></i></a>
                                     </div>
-                                </div>
-                                <div class="d-flex align-items-center mb-3">
-                                    <div>
-                                        <p class="mb-0">Payment Fee</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#7542</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3 cursor-pointer">
+                                        <img src="{{asset('template_serverSide/assets/images/avatars/avatar-8.png')}}" class="rounded-circle"
+                                            width="44" height="44" alt="">
+                                        <div class="">
+                                            <p class="mb-0">Martin Loother</p>
+                                        </div>
                                     </div>
-                                    <div class="ms-auto">
-                                        <h5 class="mb-0">$14.00</h5>
+                                </td>
+                                <td>$254.00</td>
+                                <td><span class="badge rounded-pill alert-success">Paid</span></td>
+                                <td>Master Card</td>
+                                <td>28 Apr 2020</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3 fs-6">
+                                        <a href="javascript:;" class="text-primary" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title=""
+                                            data-bs-original-title="View detail" aria-label="Views"><i
+                                                class="bi bi-eye-fill"></i></a>
+                                        <a href="javascript:;" class="text-warning" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title="" data-bs-original-title="Edit info"
+                                            aria-label="Edit"><i class="bi bi-pencil-fill"></i></a>
+                                        <a href="javascript:;" class="text-danger" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title="" data-bs-original-title="Delete"
+                                            aria-label="Delete"><i class="bi bi-trash-fill"></i></a>
                                     </div>
-                                </div>
-                                <div class="d-flex align-items-center mb-3">
-                                    <div>
-                                        <p class="mb-0">Discount</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#6850</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3 cursor-pointer">
+                                        <img src="{{asset('template_serverSide/assets/images/avatars/avatar-9.png')}}" class="rounded-circle"
+                                            width="44" height="44" alt="">
+                                        <div class="">
+                                            <p class="mb-0">Victoria Hardy</p>
+                                        </div>
                                     </div>
-                                    <div class="ms-auto">
-                                        <h5 class="mb-0 text-danger">-$36.00</h5>
+                                </td>
+                                <td>$145.00</td>
+                                <td><span class="badge rounded-pill alert-warning">Pending</span></td>
+                                <td>Master Card</td>
+                                <td>30 Apr 2020</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3 fs-6">
+                                        <a href="javascript:;" class="text-primary" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title=""
+                                            data-bs-original-title="View detail" aria-label="Views"><i
+                                                class="bi bi-eye-fill"></i></a>
+                                        <a href="javascript:;" class="text-warning" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title="" data-bs-original-title="Edit info"
+                                            aria-label="Edit"><i class="bi bi-pencil-fill"></i></a>
+                                        <a href="javascript:;" class="text-danger" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title="" data-bs-original-title="Delete"
+                                            aria-label="Delete"><i class="bi bi-trash-fill"></i></a>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card border shadow-none bg-warning radius-10">
-                            <div class="card-body">
-                                <h5>Payment info</h5>
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="fs-1">
-                                        <i class="bi bi-credit-card-2-back-fill"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#6534</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3 cursor-pointer">
+                                        <img src="{{asset('template_serverSide/assets/images/avatars/avatar-10.png')}}" class="rounded-circle"
+                                            width="44" height="44" alt="">
+                                        <div class="">
+                                            <p class="mb-0">Thomas Hardy</p>
+                                        </div>
                                     </div>
-                                    <div class="">
-                                        <p class="mb-0 fs-6">Master Card **** **** 8956 </p>
+                                </td>
+                                <td>$105.00</td>
+                                <td><span class="badge rounded-pill alert-success">Paid</span></td>
+                                <td>Master Card</td>
+                                <td>01 May 2020</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3 fs-6">
+                                        <a href="javascript:;" class="text-primary" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title=""
+                                            data-bs-original-title="View detail" aria-label="Views"><i
+                                                class="bi bi-eye-fill"></i></a>
+                                        <a href="javascript:;" class="text-warning" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title="" data-bs-original-title="Edit info"
+                                            aria-label="Edit"><i class="bi bi-pencil-fill"></i></a>
+                                        <a href="javascript:;" class="text-danger" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title="" data-bs-original-title="Delete"
+                                            aria-label="Delete"><i class="bi bi-trash-fill"></i></a>
                                     </div>
-                                </div>
-                                <p>Business name: Template Market LLP <br>
-                                    Phone: +91-9910XXXXXX
-                                </p>
-                            </div>
-                        </div>
-
-
-                    </div>
-                </div><!--end row-->
-
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <nav class="float-end mt-3">
+                    <ul class="pagination">
+                        <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                    </ul>
+                </nav>
             </div>
         </div>
 

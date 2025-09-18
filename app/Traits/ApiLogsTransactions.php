@@ -7,6 +7,9 @@ use App\Models\Transaction;
 
 trait ApiLogsTransactions
 {
+    /**
+     * Registra requisições/respostas de APIs e atualiza/cria transações
+     */
     public function logApi(
         string $wallet,
         string $endpoint,
@@ -29,7 +32,10 @@ trait ApiLogsTransactions
             'status'   => $status,
         ]);
 
-        // 🔹 Se já existe no banco → atualiza
+        // 🔹 Prepara provider_response
+        $providerResponse = $this->extractErrorCode($response);
+
+        // 🔹 Atualiza transação existente, se existir
         if ($transactionId) {
             $transaction = Transaction::where('transaction_id', $transactionId)
                 ->where('wallet', $wallet)
@@ -38,7 +44,7 @@ trait ApiLogsTransactions
             if ($transaction) {
                 $updateData = [
                     'status'            => $status,
-                    'provider_response' => $response,
+                    'provider_response' => $providerResponse,
                 ];
 
                 if ($msisdn) {
@@ -53,7 +59,7 @@ trait ApiLogsTransactions
             }
         }
 
-        // 🔹 Só cria nova transação se tiver os dados obrigatórios
+        // 🔹 Cria nova transação se houver dados completos
         if ($transactionId && $msisdn && $amount) {
             return Transaction::create([
                 'wallet'            => $wallet,
@@ -62,7 +68,7 @@ trait ApiLogsTransactions
                 'amount'            => $amount,
                 'status'            => $status,
                 'request_payload'   => is_array($payload) ? json_encode($payload) : $payload,
-                'provider_response' => $response,
+                'provider_response' => $providerResponse,
             ]);
         }
 
@@ -72,9 +78,23 @@ trait ApiLogsTransactions
             'msisdn'         => $msisdn,
             'amount'         => $amount,
             'status'         => $status,
-            'response'       => $response,
+            'response'       => $providerResponse,
         ]);
 
         return null;
+    }
+
+    /**
+     * Extrai o atributo errorcode de respostas XML do provedor
+     */
+    protected function extractErrorCode($response)
+    {
+        if (is_string($response) && str_starts_with(trim($response), '<?xml')) {
+            $xml = @simplexml_load_string($response);
+            if ($xml && isset($xml['errorcode'])) {
+                return (string) $xml['errorcode'];
+            }
+        }
+        return $response; // mantém o conteúdo original se não houver errorcode
     }
 }
