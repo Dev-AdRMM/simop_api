@@ -67,7 +67,6 @@ trait ApiLogsTransactions
                 'msisdn'            => $msisdn,
                 'amount'            => $amount,
                 'status'            => $status,
-                'request_payload'   => is_array($payload) ? json_encode($payload) : $payload,
                 'provider_response' => $providerResponse,
             ]);
         }
