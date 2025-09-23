@@ -32,8 +32,16 @@ trait ApiLogsTransactions
             'status'   => $status,
         ]);
 
-        // 🔹 Prepara provider_response
-        $providerResponse = $this->extractErrorCode($response);
+        // 🔹 Extrai status simplificado ou error code
+        if ($response) {
+            $providerResponse = $this->extractProviderStatus($response);
+
+            if ($providerResponse === $response) {
+                $providerResponse = $this->extractErrorCode($response);
+            }
+        } else {
+            $providerResponse = null;
+        }
 
         // 🔹 Atualiza transação existente, se existir
         if ($transactionId) {
@@ -84,6 +92,22 @@ trait ApiLogsTransactions
     }
 
     /**
+     * Extrai apenas o status de uma resposta XML
+     */
+    protected function extractProviderStatus($response)
+    {
+        if (is_string($response) && str_starts_with(trim($response), '<?xml')) {
+            $xml = @simplexml_load_string($response);
+
+            if ($xml && isset($xml->status)) {
+                return strtoupper((string) $xml->status);
+            }
+        }
+
+        return $response; // mantém original se não tiver <status>
+    }
+
+    /**
      * Extrai o atributo errorcode de respostas XML do provedor
      */
     protected function extractErrorCode($response)
@@ -94,6 +118,6 @@ trait ApiLogsTransactions
                 return (string) $xml['errorcode'];
             }
         }
-        return $response; // mantém o conteúdo original se não houver errorcode
+        return $response;
     }
 }

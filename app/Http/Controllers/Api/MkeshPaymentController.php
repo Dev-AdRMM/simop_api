@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
@@ -38,7 +37,7 @@ class MkeshPaymentController extends Controller
             $request->transaction_id
         );
 
-        // 🔹 Usa Trait
+        // 🔹 Usa Trait para log e salvar transação
         $this->logApi(
             'mkesh',
             '/api/v1/mkesh/debit',
@@ -56,7 +55,9 @@ class MkeshPaymentController extends Controller
             ->header('Content-Type', 'application/xml');
     }
 
-    
+    /**
+     * Consulta status de uma transação
+     */
     public function status(Request $request)
     {
         $request->validate([
@@ -65,14 +66,12 @@ class MkeshPaymentController extends Controller
 
         $response = $this->mkesh->getTransactionStatus($request->transaction_id);
 
-        // 🔹 Tenta interpretar XML
-        $xml = simplexml_load_string($response);
+        $xml = @simplexml_load_string($response);
         $providerStatus = null;
 
         if ($xml && isset($xml->status)) {
             $providerStatus = strtolower((string) $xml->status);
         } elseif ($xml && isset($xml['errorcode'])) {
-            // 🔹 Caso de erro do provedor
             $errorCode = (string) $xml['errorcode'];
 
             Log::error("[mkesh] Erro na consulta de transação", [
@@ -81,7 +80,6 @@ class MkeshPaymentController extends Controller
                 'response'       => $response,
             ]);
 
-            // 🔹 Decide formato da resposta
             if ($request->wantsJson()) {
                 return response()->json([
                     'transaction_id' => $request->transaction_id,
@@ -91,27 +89,11 @@ class MkeshPaymentController extends Controller
                 ], 404);
             }
 
-            // Default → retorna XML original do provedor
             return response($response, 404)
                 ->header('Content-Type', 'application/xml');
         }
 
-        // 🔹 Atualiza a transação só se existir localmente
-        $transaction = Transaction::where('transaction_id', $request->transaction_id)->first();
-
-        if ($transaction) {
-            $transaction->update([
-                'provider_response' => $response,
-                'status'            => $providerStatus ?? 'checked',
-            ]);
-        } else {
-            Log::warning("Consulta de transação inexistente no banco/local", [
-                'transaction_id' => $request->transaction_id,
-                'response'       => $response,
-            ]);
-        }
-
-        // 🔹 Log no trait
+        // 🔹 Usa trait para atualizar ou logar transação
         $this->logApi(
             'mkesh',
             '/api/v1/mkesh/status',
@@ -119,11 +101,10 @@ class MkeshPaymentController extends Controller
             $request->headers->all(),
             $request->all(),
             $response,
-            $providerStatus ?? 'CHECKED',
+            strtoupper($providerStatus ?? 'CHECKED'),
             $request->transaction_id
         );
 
-        // 🔹 Decide resposta final
         if ($request->wantsJson()) {
             return response()->json([
                 'transaction_id' => $request->transaction_id,
@@ -137,29 +118,19 @@ class MkeshPaymentController extends Controller
     }
 
     /**
-     * Endpoint de Callback (recebe XML)
+     * Callback do provedor (recebe XML)
      */
     public function callback(Request $request)
     {
         $xmlContent = $request->getContent();
         Log::info("Callback Mkesh recebido", ['xml' => $xmlContent]);
 
-        // Parse XML
-        $xml = simplexml_load_string($xmlContent);
-        $transactionId = (string) $xml->transactionid ?? null;
-        $externalTransactionId = (string) $xml->externaltransactionid ?? null;
-        $status = (string) $xml->status ?? 'RECEIVED';
+        $xml = @simplexml_load_string($xmlContent);
+        $transactionId = (string) ($xml->transactionid ?? null);
+        $externalTransactionId = (string) ($xml->externaltransactionid ?? null);
+        $status = (string) ($xml->status ?? 'RECEIVED');
 
-        // Atualiza transação existente
-        if ($externalTransactionId) {
-            Transaction::where('transaction_id', $externalTransactionId)
-                ->update([
-                    'status' => strtolower($status),
-                    'provider_response' => $xmlContent,
-                ]);
-        }
-
-        // Salva log (com IDs corretos)
+        // 🔹 Usa trait para atualizar ou criar transação
         $this->logApi(
             'mkesh',
             '/api/v1/mkesh/callback',
@@ -167,16 +138,16 @@ class MkeshPaymentController extends Controller
             $request->headers->all(),
             $xmlContent,
             '<response>ACKNOWLEDGED</response>',
-            $status,
+            strtoupper($status),
             $externalTransactionId
         );
 
         $response = <<<XML
             <?xml version="1.0" encoding="UTF-8"?>
             <response>
-            <status>ACKNOWLEDGED</status>
+                <status>ACKNOWLEDGED</status>
             </response>
-            XML;
+        XML;
 
         return response($response, 200)
             ->header('Content-Type', 'application/xml');

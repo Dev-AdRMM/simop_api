@@ -1,15 +1,12 @@
 @extends('simop_serverSide/_layout')
 
 <!-- CSS -->
-<link href="https://cdn.datatables.net/1.13.5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-
-<script src="{{ asset('/js/vendor/jquery-3.6.0.min.js') }}"></script>
-
-<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+   <link href="{{asset('template_serverSide/assets/plugins/datatable/css/dataTables.bootstrap5.min.css')}}" rel="stylesheet" />
 
 <!-- JS -->
-<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.min.js"></script>
+  <script src="{{asset('template_serverSide/assets/js/jquery.min.js')}}"></script>
+  <script src="{{asset('template_serverSide/assets/plugins/datatable/js/jquery.dataTables.min.js')}}"></script>
+  <script src="{{asset('template_serverSide/assets/plugins/datatable/js/dataTables.bootstrap5.min.js')}}"></script>
 
 @section('content')
     <!--start content-->
@@ -184,15 +181,10 @@ $(document).ready(function() {
                     return `<span class="badge rounded-pill bg-${badgeClass}">${data}</span>`;
                 }
             },
-            { 
+            {
                 data: 'provider_response',
                 render: function(data) {
-                    if (!data) return '-';
-                    if (data.includes('errorcode')) {
-                        let match = data.match(/errorcode="([^"]+)"/);
-                        return match ? match[1] : 'Erro';
-                    }
-                    return '-';
+                    return data ? data : '-';
                 }
             },
             { data: 'created_at' },
