@@ -1,13 +1,19 @@
 @extends('simop_serverSide/_layout')
 
-<script src="{{ asset('/js/vendor/jquery-3.6.0.min.js') }}"></script>
+<!-- CSS -->
+<link href="{{asset('template_serverSide/assets/plugins/datatable/css/dataTables.bootstrap5.min.css')}}" rel="stylesheet" />
+
+<!-- JS -->
+<script src="{{asset('template_serverSide/assets/js/jquery.min.js')}}"></script>
+<script src="{{asset('template_serverSide/assets/plugins/datatable/js/jquery.dataTables.min.js')}}"></script>
+<script src="{{asset('template_serverSide/assets/plugins/datatable/js/dataTables.bootstrap5.min.js')}}"></script>
 
 @section('content')
     <!--start content-->
     <main class="page-content">
         <!--breadcrumb-->
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <div class="breadcrumb-title pe-3">eCommerce</div>
+            <div class="breadcrumb-title pe-3">Mkesh</div>
             <div class="ps-3">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0 p-0">
@@ -19,15 +25,16 @@
             </div>
             <div class="ms-auto">
                 <div class="btn-group">
-                    <button type="button" class="btn btn-primary">Settings</button>
+                    <button type="button" class="btn btn-primary">Fazer Transação</button>
                     <button type="button" class="btn btn-primary split-bg-primary dropdown-toggle dropdown-toggle-split"
                         data-bs-toggle="dropdown"> <span class="visually-hidden">Toggle Dropdown</span>
                     </button>
-                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-end"> <a class="dropdown-item"
-                            href="javascript:;">Action</a>
-                        <a class="dropdown-item" href="javascript:;">Another action</a>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-end"> 
+                        <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#debitRequestModal">Debit request</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="javascript:;">Debit Status</a>
+                        <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="javascript:;">Something else here</a>
-                        <div class="dropdown-divider"></div> <a class="dropdown-item" href="javascript:;">Separated link</a>
                     </div>
                 </div>
             </div>
@@ -392,4 +399,49 @@
 
     </main>
     <!--end page main-->
+
+
+<div class="col">
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#debitRequestModal">
+        Nova Transação
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="debitRequestModal" tabindex="-1" aria-labelledby="debitRequestModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="mb-0 text-uppercase" id="debitRequestModalLabel">Mkesh - Debit Request</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form id="debitForm" class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label">Número Mkesh</label>
+                            <input type="number" id="msisdn" class="form-control" placeholder="Ex: 25884XXXXXXX" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Valor (MT)</label>
+                            <input type="number" id="amount" class="form-control" min="1" required>
+                        </div>
+                        <div class="col-12">
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Enviar Débito</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div id="debitResponse" class="mt-3"></div>
+                </div>
+
+                <!-- <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
+                </div> -->
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection

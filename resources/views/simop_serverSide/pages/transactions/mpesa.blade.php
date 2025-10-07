@@ -1,13 +1,20 @@
 @extends('simop_serverSide/_layout')
 
-<script src="{{ asset('/js/vendor/jquery-3.6.0.min.js') }}"></script>
+<!-- CSS -->
+   <link href="{{asset('template_serverSide/assets/plugins/datatable/css/dataTables.bootstrap5.min.css')}}" rel="stylesheet" />
+
+<!-- JS -->
+  <script src="{{asset('template_serverSide/assets/js/jquery.min.js')}}"></script>
+  <script src="{{asset('template_serverSide/assets/plugins/datatable/js/jquery.dataTables.min.js')}}"></script>
+  <script src="{{asset('template_serverSide/assets/plugins/datatable/js/dataTables.bootstrap5.min.js')}}"></script>
+
 
 @section('content')
     <!--start content-->
     <main class="page-content">
         <!--breadcrumb-->
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <div class="breadcrumb-title pe-3">eCommerce</div>
+            <div class="breadcrumb-title pe-3">Mpesa</div>
             <div class="ps-3">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0 p-0">
