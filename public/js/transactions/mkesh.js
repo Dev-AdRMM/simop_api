@@ -139,8 +139,15 @@ $(document).ready(function() {
             {
                 data: null,
                 orderable: false,
-                render: function () {
-                    return `<button class="btn btn-sm btn-outline-primary">Ver</button>`;
+                // render: function () {
+                //     return `<button class="btn btn-sm btn-outline-primary">Ver</button>`;
+                // }
+                render: function(row) {
+                    return `
+                            <a href="/transactions/${row.id}" class="text-primary" title="Ver detalhe">
+                                <i class="bi bi-eye-fill"></i>
+                            </a>
+                    `;
                 }
             }
         ]

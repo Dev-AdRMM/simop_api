@@ -26,16 +26,15 @@ $(document).ready(function() {
             { data: 'msisdn' },
             { data: 'transaction_id' },
             { data: 'amount' },
-            { 
+            {
                 data: 'status',
-                render: function(data) {
-                    let badgeClass = 'secondary';
-                    if (data.toLowerCase() === 'successful') badgeClass = 'success';
-                    else if (data.toLowerCase() === 'failed') badgeClass = 'danger';
-                    else if (data.toLowerCase() === 'sent') badgeClass = 'warning';
-                    else if (data.toLowerCase() === 'checked') badgeClass = 'info';
+                render: function (data) {
+                    let badgeClass = 'bg-secondary';
+                    if (data.toLowerCase() === 'successful') badgeClass = 'bg-success';
+                    else if (data.toLowerCase() === 'failed') badgeClass = 'bg-danger';
+                    else if (data.toLowerCase() === 'sent') badgeClass = 'bg-warning text-dark';
 
-                    return `<span class="badge rounded-pill bg-${badgeClass}">${data}</span>`;
+                    return `<span class="badge ${badgeClass}">${data.toUpperCase()}</span>`;
                 }
             },
             {
@@ -44,17 +43,27 @@ $(document).ready(function() {
                     return data ? data : '-';
                 }
             },
-            { data: 'created_at' },
-            { data: 'updated_at' },
+            {
+                data: 'created_at',
+                render: function (data) {
+                    const d = new Date(data);
+                    return d.toLocaleString('pt-PT');
+                }
+            },
+            {
+                data: 'updated_at',
+                render: function (data) {
+                    const d = new Date(data);
+                    return d.toLocaleString('pt-PT');
+                }
+            },
             {
                 data: null,
                 render: function(row) {
                     return `
-                        <div class="d-flex align-items-center gap-2">
                             <a href="/transactions/${row.id}" class="text-primary" title="Ver detalhe">
                                 <i class="bi bi-eye-fill"></i>
                             </a>
-                        </div>
                     `;
                 }
             }
