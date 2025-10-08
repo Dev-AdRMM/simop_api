@@ -123,14 +123,89 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+
 // mkesh Transations Table
+// $(document).ready(function() {
+//     $('#mkeshTransactionsTable').DataTable({
+//         processing: true,
+//         serverSide: false, 
+//         ajax: {
+//             url: mkeshTransactionsDataUrl, // variável vinda do Blade
+//             dataSrc: 'data' // 👈 importante!
+//         },
+//         columns: [
+//             { data: 'id' },
+//             {
+//                 data: 'wallet',
+//                 render: function () {
+//                     return `
+//                         <div class="d-flex align-items-center gap-3 cursor-pointer">
+//                             <img src="${mkeshImage}" class="rounded-circle" width="30" height="30" alt="Mkesh">
+//                             <div>
+//                                 <p class="mb-0">Mkesh</p>
+//                             </div>
+//                         </div>
+//                     `;
+//                 }
+//             },
+//             { data: 'msisdn' },
+//             { data: 'transaction_id' },
+//             { data: 'amount' },
+//             {
+//                 data: 'status',
+//                 render: function (data) {
+//                     let badgeClass = 'bg-secondary';
+//                     if (data.toLowerCase() === 'successful') badgeClass = 'bg-success';
+//                     else if (data.toLowerCase() === 'failed') badgeClass = 'bg-danger';
+//                     else if (data.toLowerCase() === 'sent') badgeClass = 'bg-warning text-dark';
+
+//                     return `<span class="badge ${badgeClass}">${data.toUpperCase()}</span>`;
+//                 }
+//             },
+//             {
+//                 data: 'provider_response',
+//                 render: function(data) {
+//                     return data ? data : '-';
+//                 }
+//             },
+//             {
+//                 data: 'created_at',
+//                 render: function (data) {
+//                     const d = new Date(data);
+//                     return d.toLocaleString('pt-PT');
+//                 }
+//             },
+//             {
+//                 data: 'updated_at',
+//                 render: function (data) {
+//                     const d = new Date(data);
+//                     return d.toLocaleString('pt-PT');
+//                 }
+//             },
+//             {
+//                 data: null,
+//                 orderable: false,
+//                 render: function(row) {
+//                     return `
+//                             <a href="/transactions/${row.id}" class="text-primary" title="Ver detalhe">
+//                                 <i class="bi bi-eye-fill"></i>
+//                             </a>
+//                     `;
+//                 }
+//             }
+//         ]
+//     });
+// });
+
+// Inicializa DataTable Mkesh Transactions
 $(document).ready(function() {
-    $('#mkeshTransactionsTable').DataTable({
+    const table = $('#mkeshTransactionsTable').DataTable({
         processing: true,
         serverSide: false, 
+        dom: 'rtip', // desativa search box e length padrão
         ajax: {
             url: mkeshTransactionsDataUrl, // variável vinda do Blade
-            dataSrc: 'data' // 👈 importante!
+            dataSrc: 'data'
         },
         columns: [
             { data: 'id' },
@@ -157,6 +232,7 @@ $(document).ready(function() {
                     if (data.toLowerCase() === 'successful') badgeClass = 'bg-success';
                     else if (data.toLowerCase() === 'failed') badgeClass = 'bg-danger';
                     else if (data.toLowerCase() === 'sent') badgeClass = 'bg-warning text-dark';
+                    else if (data.toLowerCase() === 'checked') badgeClass = 'bg-info text-dark';
 
                     return `<span class="badge ${badgeClass}">${data.toUpperCase()}</span>`;
                 }
@@ -186,12 +262,33 @@ $(document).ready(function() {
                 orderable: false,
                 render: function(row) {
                     return `
-                            <a href="/transactions/${row.id}" class="text-primary" title="Ver detalhe">
-                                <i class="bi bi-eye-fill"></i>
-                            </a>
+                        <a href="/transactions/${row.id}" class="text-primary" title="Ver detalhe">
+                            <i class="bi bi-eye-fill"></i>
+                        </a>
                     `;
                 }
             }
         ]
+    });
+
+    // 🔹 Pesquisa customizada
+    $('.card-header input[type="text"]').on('keyup', function() {
+        table.search(this.value).draw();
+    });
+
+    // 🔹 Filtro de Status
+    $('.card-header select.form-select').first().on('change', function() {
+        const val = this.value;
+        if (val === "Show All" || val === "Status") {
+            table.column(5).search('').draw(); // coluna 5 = status
+        } else {
+            table.column(5).search(val, true, false).draw();
+        }
+    });
+
+    // 🔹 Seleção de quantidade de linhas
+    $('.card-header select.form-select').last().on('change', function() {
+        const len = parseInt(this.value.replace('Show ', ''));
+        table.page.len(len).draw();
     });
 });
