@@ -104,7 +104,9 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="mb-0 text-uppercase" id="debitRequestModalLabel">Mkesh - Debit Request</h5>
+                        <h5 class="mb-0 text-uppercase" id="debitRequestModalLabel">
+                            <img src="{{ asset('template_serverSide/assets/images/avatars/mkesh.png') }}" width="28" class="me-2">Debit Request
+                        </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
@@ -141,7 +143,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="mb-0 text-uppercase" id="debitStatusModalModalLabel">
-                            <img src="{{ asset('template_serverSide/assets/images/avatars/mkesh.png') }}" width="28" class="me-2"> Mkesh - Debit Status
+                            <img src="{{ asset('template_serverSide/assets/images/avatars/mkesh.png') }}" width="28" class="me-2">Debit Status
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>

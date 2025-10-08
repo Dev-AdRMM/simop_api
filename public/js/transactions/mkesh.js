@@ -169,7 +169,8 @@ $(document).ready(function () {
 
         // Chamada AJAX para tua rota Laravel
         $.ajax({
-            url: '/api/v1/mkesh/debit_status',
+            // url: '/api/v1/mkesh/debit_status',
+            url: 'https://simopapi.adrmm.co.mz/api/v1/mkesh/debit_status',
             method: 'POST',
             data: {
                 transaction_id: transactionId,
