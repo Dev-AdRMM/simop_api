@@ -73,7 +73,7 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="transactionsTable" class="table align-middle">
+                            <table id="transactionsTable" class="table align-middle mb-0">
                                 <thead class="table-light">
                                     <tr>
                                         <th>ID</th>
@@ -93,116 +93,27 @@
                                 </tbody>
                             </table>
                         </div>
-                        <nav class="float-end" aria-label="Page navigation">
-                            <ul class="pagination">
-                                <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                            </ul>
-                        </nav>
+
                     </div>
                 </div>
             </div>
-            <!-- <div class="col-12 col-lg-3 d-flex">
-                <div class="card w-100">
-                    <div class="card-header py-3">
-                        <h5 class="mb-0">Filter by</h5>
-                    </div>
-                    <div class="card-body">
-                        <form class="row g-3">
-                            <div class="col-12">
-                                <label class="form-label">Order ID</label>
-                                <input type="text" class="form-control" placeholder="Order ID">
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Customer</label>
-                                <input type="text" class="form-control" placeholder="Customer name">
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Order Status</label>
-                                <select class="form-select">
-                                    <option>Published</option>
-                                    <option>Draft</option>
-                                </select>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Total</label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Date Added</label>
-                                <input type="date" class="form-control">
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Date Modified</label>
-                                <input type="date" class="form-control">
-                            </div>
-                            <div class="col-12">
-                                <div class="d-grid">
-                                    <button class="btn btn-primary">Filter Product</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div> -->
-        </div><!--end row-->
+
+        </div>
+    <!--end row-->
 
     </main>
     <!--end page main-->
 @endsection
 
+@section('scripts')
 <script>
-$(document).ready(function() {
-    $('#transactionsTable').DataTable({
-        processing: true,
-        serverSide: false, 
-        ajax: {
-            url: '{{ route("transactions.data") }}',
-            dataSrc: 'data' // 👈 importante!
-        },
-        columns: [
-            { data: 'id' },
-            { data: 'wallet' },
-            { data: 'msisdn' },
-            { data: 'transaction_id' },
-            { data: 'amount' },
-            { 
-                data: 'status',
-                render: function(data) {
-                    let badgeClass = 'secondary';
-                    if (data.toLowerCase() === 'successful') badgeClass = 'success';
-                    else if (data.toLowerCase() === 'failed') badgeClass = 'danger';
-                    else if (data.toLowerCase() === 'sent') badgeClass = 'warning';
-                    else if (data.toLowerCase() === 'checked') badgeClass = 'info';
-
-                    return `<span class="badge rounded-pill bg-${badgeClass}">${data}</span>`;
-                }
-            },
-            {
-                data: 'provider_response',
-                render: function(data) {
-                    return data ? data : '-';
-                }
-            },
-            { data: 'created_at' },
-            { data: 'updated_at' },
-            {
-                data: null,
-                render: function(row) {
-                    return `
-                        <div class="d-flex align-items-center gap-2">
-                            <a href="/transactions/${row.id}" class="text-primary" title="Ver detalhe">
-                                <i class="bi bi-eye-fill"></i>
-                            </a>
-                        </div>
-                    `;
-                }
-            }
-        ]
-    });
-});
-
+    const transactionsDataUrl = "{{ route('transactions.data') }}";
+    const walletImages = {
+        mkesh: "{{ asset('template_serverSide/assets/images/avatars/mkesh.png') }}",
+        mpesa: "{{ asset('template_serverSide/assets/images/avatars/mpesa.png') }}",
+        emola: "{{ asset('template_serverSide/assets/images/avatars/emola.png') }}"
+    };
 </script>
+
+<script src="{{ asset('js/transactions/index.js') }}"></script>
+@endsection

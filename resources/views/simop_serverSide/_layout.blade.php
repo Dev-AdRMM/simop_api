@@ -149,6 +149,7 @@
       new PerfectScrollbar(".best-product")
   </script>
 
+  @yield('scripts')
 </body>
 
 </html>
