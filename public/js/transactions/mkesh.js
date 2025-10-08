@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const debitForm = document.getElementById("debitForm");
-    const responseDiv = document.getElementById("debitResponse");
+    const debitForm = document.getElementById("debitRequestForm");
+    const responseDiv = document.getElementById("debitRequestResponse");
 
     debitForm.addEventListener("submit", async function (e) {
         e.preventDefault();
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Função global para verificar status
 async function checkTransactionStatus(transactionId) {
-    const responseDiv = document.getElementById("debitResponse");
+    const responseDiv = document.getElementById("debitRequestResponse");
     responseDiv.innerHTML = `<div class="alert alert-info">Consultando status da transação...</div>`;
 
     try {
@@ -169,7 +169,7 @@ $(document).ready(function () {
 
         // Chamada AJAX para tua rota Laravel
         $.ajax({
-            url: '/api/v1/mkesh/debit_status', // <-- ajusta conforme tua rota real
+            url: '/api/v1/mkesh/debit_status',
             method: 'POST',
             data: {
                 transaction_id: transactionId,

@@ -109,7 +109,7 @@
                     </div>
 
                     <div class="modal-body">
-                        <form id="debitForm" class="row g-3">
+                        <form id="debitRequestForm" class="row g-3">
                             <div class="col-12">
                                 <label class="form-label">Número Mkesh</label>
                                 <input type="number" id="msisdn" class="form-control" placeholder="Ex: 25884XXXXXXX" required>
@@ -125,7 +125,7 @@
                             </div>
                         </form>
 
-                        <div id="debitResponse" class="mt-3"></div>
+                        <div id="debitRequestResponse" class="mt-3"></div>
                     </div>
 
                 </div>
@@ -140,7 +140,9 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="mb-0 text-uppercase" id="debitStatusModalModalLabel">Mkesh - Debit Status</h5>
+                        <h5 class="mb-0 text-uppercase" id="debitStatusModalModalLabel">
+                            <img src="{{ asset('template_serverSide/assets/images/avatars/mkesh.png') }}" width="28" class="me-2"> Mkesh - Debit Status
+                        </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
@@ -148,12 +150,14 @@
                         <form id="debitStatusForm" class="row g-3">
                             <div class="col-12">
                                 <label class="form-label">ID da transação Mkesh</label>
-                                <input type="text" id="transaction_id" class="form-control" placeholder="Ex: ADR000027" required>
+                                <input type="text" id="transaction_id" class="form-control" placeholder="Ex: ADR000123" required>
                             </div>
 
                             <div class="col-12">
                                 <div class="d-grid">
-                                    <button type="submit" class="btn btn-primary">Ver o Status</button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-search"></i> Ver o Status
+                                    </button>
                                 </div>
                             </div>
                         </form>
@@ -165,7 +169,8 @@
             </div>
         </div>
     </div>
-    <!--end Modal debit request-->
+    <!--end Modal debit status-->
+
 
 @endsection
 
