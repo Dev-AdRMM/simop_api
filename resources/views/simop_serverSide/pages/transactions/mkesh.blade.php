@@ -148,7 +148,7 @@
                         <form id="debitStatusForm" class="row g-3">
                             <div class="col-12">
                                 <label class="form-label">ID da transação Mkesh</label>
-                                <input type="number" id="transaction_id" class="form-control" placeholder="Ex: ADR000027" required>
+                                <input type="text" id="transaction_id" class="form-control" placeholder="Ex: ADR000027" required>
                             </div>
 
                             <div class="col-12">
