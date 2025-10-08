@@ -23,7 +23,7 @@ class MkeshPaymentController extends Controller
     /**
      * Testa um débito
      */
-    public function debit(Request $request)
+    public function debit_request(Request $request)
     {
         $request->validate([
             'msisdn' => 'required|string',
@@ -40,7 +40,7 @@ class MkeshPaymentController extends Controller
         // 🔹 Usa Trait para log e salvar transação
         $this->logApi(
             'mkesh',
-            '/api/v1/mkesh/debit',
+            '/api/v1/mkesh/debit_request',
             $request->method(),
             $request->headers->all(),
             $request->all(),
@@ -58,7 +58,7 @@ class MkeshPaymentController extends Controller
     /**
      * Consulta status de uma transação
      */
-    public function status(Request $request)
+    public function debit_status(Request $request)
     {
         $request->validate([
             'transaction_id' => 'required|string',
@@ -96,7 +96,7 @@ class MkeshPaymentController extends Controller
         // 🔹 Usa trait para atualizar ou logar transação
         $this->logApi(
             'mkesh',
-            '/api/v1/mkesh/status',
+            '/api/v1/mkesh/debit_status',
             $request->method(),
             $request->headers->all(),
             $request->all(),

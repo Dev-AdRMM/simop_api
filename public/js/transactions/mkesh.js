@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
         responseDiv.innerHTML = `<div class="alert alert-info">Processando requisição...</div>`;
 
         try {
-            const response = await fetch("/api/v1/mkesh/debit", {
+            const response = await fetch("/api/v1/mkesh/debit_request", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -56,7 +56,7 @@ async function checkTransactionStatus(transactionId) {
     responseDiv.innerHTML = `<div class="alert alert-info">Consultando status da transação...</div>`;
 
     try {
-        const response = await fetch("/api/v1/mkesh/status", {
+        const response = await fetch("/api/v1/mkesh/debit_status", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -169,7 +169,7 @@ $(document).ready(function () {
 
         // Chamada AJAX para tua rota Laravel
         $.ajax({
-            url: '/api/mkesh/debit-status', // <-- ajusta conforme tua rota real
+            url: '/api/v1/mkesh/debit_status', // <-- ajusta conforme tua rota real
             method: 'POST',
             data: {
                 transaction_id: transactionId,
