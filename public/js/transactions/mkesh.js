@@ -79,6 +79,7 @@ async function checkTransactionStatus(transactionId) {
     }
 }
 
+// mkesh Transations Table
 $(document).ready(function() {
     $('#mkeshTransactionsTable').DataTable({
         processing: true,
@@ -139,9 +140,6 @@ $(document).ready(function() {
             {
                 data: null,
                 orderable: false,
-                // render: function () {
-                //     return `<button class="btn btn-sm btn-outline-primary">Ver</button>`;
-                // }
                 render: function(row) {
                     return `
                             <a href="/transactions/${row.id}" class="text-primary" title="Ver detalhe">
@@ -151,5 +149,52 @@ $(document).ready(function() {
                 }
             }
         ]
+    });
+});
+
+// Debit Status
+$(document).ready(function () {
+    // 🔹 Submeter o formulário para ver status
+    $('#debitStatusForm').on('submit', function (e) {
+        e.preventDefault();
+
+        const transactionId = $('#transaction_id').val().trim();
+        if (!transactionId) {
+            alert('Por favor, insira o ID da transação Mkesh.');
+            return;
+        }
+
+        // Mostrar loading
+        $('#debitStatusResponse').html('<div class="text-center text-muted">A consultar status...</div>');
+
+        // Chamada AJAX para tua rota Laravel
+        $.ajax({
+            url: '/api/mkesh/debit-status', // <-- ajusta conforme tua rota real
+            method: 'POST',
+            data: {
+                transaction_id: transactionId,
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (response) {
+                let formattedResponse = '';
+
+                if (typeof response === 'object') {
+                    formattedResponse = `<pre class="bg-light p-3 rounded"><code>${JSON.stringify(response, null, 2)}</code></pre>`;
+                } else {
+                    // Se for XML
+                    formattedResponse = `<pre class="bg-light p-3 rounded"><code>${response}</code></pre>`;
+                }
+
+                $('#debitStatusResponse').html(formattedResponse);
+            },
+            error: function (xhr) {
+                $('#debitStatusResponse').html(`
+                    <div class="alert alert-danger mt-2">
+                        Ocorreu um erro ao consultar o status.<br>
+                        <strong>${xhr.status}</strong> - ${xhr.statusText}
+                    </div>
+                `);
+            }
+        });
     });
 });
