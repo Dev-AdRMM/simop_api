@@ -110,6 +110,6 @@ class MpesaPaymentService
      */
     private function generateReference(): string
     {
-        return 'REF-' . Str::upper(Str::random(8));
+         return Str::upper(Str::random(10));
     }
 }

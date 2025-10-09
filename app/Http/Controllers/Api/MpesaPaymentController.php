@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Traits\ApiLogsTransactions;
+use Illuminate\Support\Facades\Log;
 
 class MpesaPaymentController extends Controller
 {
@@ -25,18 +26,17 @@ class MpesaPaymentController extends Controller
     public function debit_request(Request $request)
     {
         $request->validate([
-            'msisdn' => 'required|string',
+            'msisdn' => 'required|regex:/^258\d{9}$/',
             'amount' => 'required|numeric|min:1',
-            'transaction_id' => 'required|string',
+            'invoiceNumber' => 'required|string',
         ]);
 
         $response = $this->mpesa->debitRequest(
-            $request->msisdn,
-            $request->amount,
-            $request->transaction_id
+            $request->invoiceNumber,
+            $request->msisdn, 
+            $request->amount 
         );
 
-        // 📌 Log da requisição usando Trait
         $this->logApi(
             'mpesa',
             '/api/v1/mpesa/debit_request',
@@ -45,18 +45,15 @@ class MpesaPaymentController extends Controller
             $request->all(),
             $response,
             strtoupper($response['status'] ?? 'SENT'),
-            $request->transaction_id,
+            $request->invoiceNumber,
             $request->msisdn,
             $request->amount
         );
 
-        // if ($request->wantsJson()) {
-        //     return response()->json($response, 200);
-        // }
-
         return response($response, 200)
             ->header('Content-Type', 'application/xml');
     }
+
 
     /**
      * 🔸 Consulta status de uma transação
@@ -88,16 +85,7 @@ class MpesaPaymentController extends Controller
             $request->transaction_id
         );
 
-        if ($request->wantsJson()) {
-            return response()->json([
-                'transaction_id' => $request->transaction_id,
-                'status' => $status,
-                'response' => $response,
-            ], 200);
-        }
-
-        $xmlResponse = $this->arrayToXml('response', $response);
-        return response($xmlResponse, 200)
+        return response($response, 200)
             ->header('Content-Type', 'application/xml');
     }
 
@@ -128,12 +116,7 @@ class MpesaPaymentController extends Controller
             'transaction_id' => $transactionId
         ];
 
-        if ($request->wantsJson()) {
-            return response()->json($response, 200);
-        }
-
-        $xmlResponse = $this->arrayToXml('response', $response);
-        return response($xmlResponse, 200)
+        return response($response, 200)
             ->header('Content-Type', 'application/xml');
     }
 

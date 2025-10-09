@@ -8,7 +8,7 @@ use App\Models\Transaction;
 trait ApiLogsTransactions
 {
     /**
-     * Registra requisições/respostas de APIs e atualiza/cria transações
+     * Registra requisições/respostas de APIs e atualiza/cria transações.
      */
     public function logApi(
         string $wallet,
@@ -32,18 +32,31 @@ trait ApiLogsTransactions
             'status'   => $status,
         ]);
 
-        // 🔹 Extrai status simplificado ou error code
+        /**
+         * 🔸 Extrai um resumo do response do provedor
+         *  - Pode vir em XML (caso do Mkesh)
+         *  - Ou em array (caso do Mpesa)
+         */
         if ($response) {
             $providerResponse = $this->extractProviderStatus($response);
 
             if ($providerResponse === $response) {
                 $providerResponse = $this->extractErrorCode($response);
             }
+
+            // ✅ Garante que será sempre uma string antes de salvar
+            if (is_array($providerResponse)) {
+                $providerResponse = $providerResponse['code']
+                    ?? $providerResponse['status']
+                    ?? json_encode($providerResponse);
+            }
         } else {
             $providerResponse = null;
         }
 
-        // 🔹 Atualiza transação existente, se existir
+        /**
+         * 🔸 Se já existe a transação, atualiza
+         */
         if ($transactionId) {
             $transaction = Transaction::where('transaction_id', $transactionId)
                 ->where('wallet', $wallet)
@@ -67,7 +80,9 @@ trait ApiLogsTransactions
             }
         }
 
-        // 🔹 Cria nova transação se houver dados completos
+        /**
+         * 🔸 Cria nova transação se tiver dados suficientes
+         */
         if ($transactionId && $msisdn && $amount) {
             return Transaction::create([
                 'wallet'            => $wallet,
@@ -79,7 +94,9 @@ trait ApiLogsTransactions
             ]);
         }
 
-        // 🔹 Caso não tenha dados suficientes → só loga, não cria
+        /**
+         * 🔸 Caso falte informação, apenas registra o log
+         */
         Log::warning("[$wallet] Tentativa de criar transação sem dados suficientes", [
             'transaction_id' => $transactionId,
             'msisdn'         => $msisdn,
@@ -98,13 +115,17 @@ trait ApiLogsTransactions
     {
         if (is_string($response) && str_starts_with(trim($response), '<?xml')) {
             $xml = @simplexml_load_string($response);
-
             if ($xml && isset($xml->status)) {
                 return strtoupper((string) $xml->status);
             }
         }
 
-        return $response; // mantém original se não tiver <status>
+        // Caso o response seja array (Mpesa)
+        if (is_array($response)) {
+            return $response['status'] ?? null;
+        }
+
+        return $response; // mantém original se não tiver status
     }
 
     /**
