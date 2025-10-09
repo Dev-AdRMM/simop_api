@@ -6,65 +6,135 @@ use App\Services\PaymentGateways\MpesaPaymentService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use App\Traits\ApiLogsTransactions;
+
 class MpesaPaymentController extends Controller
 {
-    private $mpesaService;
+    use ApiLogsTransactions;
 
-    public function __construct(MpesaPaymentService $mpesaService)
+    protected $mpesa;
+
+    public function __construct(MpesaPaymentService $mpesa)
     {
-        $this->mpesaService = $mpesaService;
+        $this->mpesa = $mpesa;
     }
 
-    public function processPayment(Request $request)
+    /**
+     * 🔸 Efetua um débito (C2B)
+     */
+    public function debit_request(Request $request)
     {
+        $request->validate([
+            'msisdn' => 'required|string',
+            'amount' => 'required|numeric|min:1',
+            'transaction_id' => 'required|string',
+        ]);
 
-        // $this->logApi(
-        //     'mpesa',
-        //     '/api/v1/mpesa/debit',
-        //     $request->method(),
-        //     $request->headers->all(),
-        //     $request->all(),
-        //     $response,
-        //     'SENT',
-        //     $request->transaction_id,
-        //     $request->msisdn,
-        //     $request->amount
-        // );
+        $response = $this->mpesa->debitRequest(
+            $request->msisdn,
+            $request->amount,
+            $request->transaction_id
+        );
 
+        // 📌 Log da requisição usando Trait
+        $this->logApi(
+            'mpesa',
+            '/api/v1/mpesa/debit_request',
+            $request->method(),
+            $request->headers->all(),
+            $request->all(),
+            $response,
+            strtoupper($response['status'] ?? 'SENT'),
+            $request->transaction_id,
+            $request->msisdn,
+            $request->amount
+        );
 
-        try {
-            $request->validate([
-                'phone_number' => 'required|regex:/^258\d{9}$/',
-                'amount' => 'required|numeric|min:1',
-            ]);
+        // if ($request->wantsJson()) {
+        //     return response()->json($response, 200);
+        // }
 
-            $invoice_number = 3333;
-            $phone_number = $request->input('phone_number');
-            $amount = $request->input('amount');
+        return response($response, 200)
+            ->header('Content-Type', 'application/xml');
+    }
 
-            $result = $this->mpesaService->purchase($invoice_number, $phone_number, $amount);
+    /**
+     * 🔸 Consulta status de uma transação
+     */
+    public function debit_status(Request $request)
+    {
+        $request->validate([
+            'transaction_id' => 'required|string',
+        ]);
 
-            if ($result['status'] === 'success') {
-                return response()->json([
-                    'status' => 'success',
-                    'message' => $result['message'],
-                    'transaction_id' => $result['transaction_id'],
-                ]);
-            } else {
-                return response()->json([
-                    'status' => 'failed',
-                    'message' => $result['message'],
-                ], 400);
-            }
-        } catch (\Exception $e) {
+        $response = $this->mpesa->getTransactionStatus($request->transaction_id);
+
+        Log::info("[mpesa] Consulta de status", [
+            'transaction_id' => $request->transaction_id,
+            'response' => $response
+        ]);
+
+        $status = $response['status'] ?? 'checked';
+
+        // 📌 Log da consulta
+        $this->logApi(
+            'mpesa',
+            '/api/v1/mpesa/debit_status',
+            $request->method(),
+            $request->headers->all(),
+            $request->all(),
+            $response,
+            strtoupper($status),
+            $request->transaction_id
+        );
+
+        if ($request->wantsJson()) {
             return response()->json([
-                'status' => 'error',
-                'message' => $e->getMessage(),
-            ], 500);
+                'transaction_id' => $request->transaction_id,
+                'status' => $status,
+                'response' => $response,
+            ], 200);
         }
+
+        $xmlResponse = $this->arrayToXml('response', $response);
+        return response($xmlResponse, 200)
+            ->header('Content-Type', 'application/xml');
+    }
+
+    /**
+     * 🔸 Callback recebido da API M-Pesa
+     */
+    public function callback(Request $request)
+    {
+        $data = $request->all();
+        Log::info("[mpesa] Callback recebido", $data);
+
+        $transactionId = $data['input_TransactionID'] ?? null;
+        $status = $data['output_ResponseDesc'] ?? 'RECEIVED';
+
+        $this->logApi(
+            'mpesa',
+            '/api/v1/mpesa/callback',
+            $request->method(),
+            $request->headers->all(),
+            $data,
+            ['status' => 'ACKNOWLEDGED'],
+            strtoupper($status),
+            $transactionId
+        );
+
+        $response = [
+            'status' => 'ACKNOWLEDGED',
+            'transaction_id' => $transactionId
+        ];
+
+        if ($request->wantsJson()) {
+            return response()->json($response, 200);
+        }
+
+        $xmlResponse = $this->arrayToXml('response', $response);
+        return response($xmlResponse, 200)
+            ->header('Content-Type', 'application/xml');
     }
 
 }
-
-
-

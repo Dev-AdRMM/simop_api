@@ -23,3 +23,5 @@ Route::prefix('v1')->group(function () {
     Route::post('/emola/debit_status', [EmolaPaymentController::class, 'debit_status']);
     Route::post('/emola/callback', [EmolaPaymentController::class, 'callback']);
 });
+
+
