@@ -21,6 +21,7 @@ class Wallet extends Model
         'balance',
         'status',
         'active',
+        'suspension_reason',
     ];
 
     protected $casts = [
@@ -39,16 +40,33 @@ class Wallet extends Model
         });
     }
 
-    // 🔹 Relação com usuário (cliente)
+    // 🔹 Relação com o cliente dono da carteira
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // 🔹 Escopo: apenas carteiras ativas
+    // 🔹 Escopo: carteiras operacionais
     public function scopeActive($query)
     {
-        return $query->where('active', true)
-                     ->where('status', 'active');
+        return $query->where('active', true)->where('status', 'active');
+    }
+
+    // 🔹 Método: suspender carteira
+    public function suspend(string $reason = 'Suspensão administrativa'): void
+    {
+        $this->update([
+            'status' => 'suspended',
+            'suspension_reason' => $reason,
+        ]);
+    }
+
+    // 🔹 Método: reativar carteira
+    public function activate(): void
+    {
+        $this->update([
+            'status' => 'active',
+            'suspension_reason' => null,
+        ]);
     }
 }
