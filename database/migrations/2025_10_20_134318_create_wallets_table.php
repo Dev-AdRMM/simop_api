@@ -17,8 +17,12 @@ return new class extends Migration
             $table->uuid('api_key')->unique();
             $table->string('callback_url')->nullable();
             $table->json('settings')->nullable();
-            $table->boolean('active')->default(true);
             
+            $table->decimal('balance', 15, 2)->default(0.00);
+            $table->enum('status', ['active', 'inactive', 'suspended'])->default('active');
+
+            $table->boolean('active')->default(true);
+
             $table->timestamps();
             $table->softDeletes();
         });
@@ -29,3 +33,4 @@ return new class extends Migration
         Schema::dropIfExists('wallets');
     }
 };
+

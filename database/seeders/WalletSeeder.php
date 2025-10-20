@@ -2,16 +2,12 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Wallet;
 use App\Models\User;
 
 class WalletSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $user = User::first() ?? User::factory()->create([
@@ -30,8 +26,10 @@ class WalletSeeder extends Seeder
                 'service_provider_code' => '171717',
                 'env' => 'live',
             ],
+            'balance' => 0.00,
+            'status' => 'active',
             'active' => true,
+            'suspension_reason' => null,
         ]);
-
     }
 }

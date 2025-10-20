@@ -18,12 +18,15 @@ class Wallet extends Model
         'api_key',
         'callback_url',
         'settings',
+        'balance',
+        'status',
         'active',
     ];
 
     protected $casts = [
         'settings' => 'array',
         'active' => 'boolean',
+        'balance' => 'decimal:2',
     ];
 
     // 🔹 Gera automaticamente uma API Key única ao criar
@@ -45,6 +48,7 @@ class Wallet extends Model
     // 🔹 Escopo: apenas carteiras ativas
     public function scopeActive($query)
     {
-        return $query->where('active', true);
+        return $query->where('active', true)
+                     ->where('status', 'active');
     }
 }
