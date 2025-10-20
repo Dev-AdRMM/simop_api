@@ -15,6 +15,11 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
+        // Outros seeders que possam existir...
+        $this->call([
+            WalletSeeder::class, //chama o seeder das carteiras
+        ]);
+
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',

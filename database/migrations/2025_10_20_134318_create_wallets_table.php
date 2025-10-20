@@ -22,6 +22,7 @@ return new class extends Migration
             $table->enum('status', ['active', 'inactive', 'suspended'])->default('active');
 
             $table->boolean('active')->default(true);
+            $table->string('suspension_reason')->nullable();
 
             $table->timestamps();
             $table->softDeletes();
