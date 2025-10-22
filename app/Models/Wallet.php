@@ -11,6 +11,9 @@ class Wallet extends Model
 {
     use HasFactory, SoftDeletes;
 
+    public $incrementing = false; // 🔹 Importante: desativa auto increment
+    protected $keyType = 'string'; // 🔹 O tipo da chave primária é string
+
     protected $fillable = [
         'user_id',
         'name',
@@ -34,6 +37,10 @@ class Wallet extends Model
     protected static function booted()
     {
         static::creating(function ($wallet) {
+            if (empty($wallet->id)) {
+                $wallet->id = (string) Str::uuid(); // ✅ Gera UUID automaticamente
+            }
+
             if (empty($wallet->api_key)) {
                 $wallet->api_key = (string) Str::uuid();
             }

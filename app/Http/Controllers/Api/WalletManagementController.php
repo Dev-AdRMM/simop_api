@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Wallet;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
+use App\Models\Wallet;
 
 class WalletManagementController extends Controller
 {
@@ -40,15 +40,47 @@ class WalletManagementController extends Controller
             'name' => 'required|string|unique:wallets,name',
             'provider' => ['required', Rule::in(['mpesa', 'mkesh', 'emola'])],
             'callback_url' => 'nullable|url',
-            'settings' => 'nullable|array',
+            'settings' => 'required|array',
         ]);
 
+        $provider = strtolower($request->provider);
+        $settings = $request->settings;
+
+        // 🔍 Validações específicas por provedor
+        switch ($provider) {
+            case 'mpesa':
+                $request->validate([
+                    'settings.api_key' => 'required|string',
+                    'settings.public_key' => 'required|string',
+                    'settings.service_provider_code' => 'required|string',
+                ]);
+                break;
+
+            case 'mkesh':
+                $request->validate([
+                    'settings.username' => 'required|string',
+                    'settings.password' => 'required|string',
+                ]);
+                break;
+
+            case 'emola':
+                $request->validate([
+                    'settings.emola_key' => 'required|string',
+                    'settings.username' => 'required|string',
+                    'settings.password' => 'required|string',
+                    'settings.service_provider_code' => 'required|string',
+                    'settings.api_host' => 'required|url',
+                ]);
+                break;
+        }
+
+        // 💾 Criação da carteira
         $wallet = Wallet::create([
             'user_id' => $request->user_id,
             'name' => strtoupper($request->name),
-            'provider' => $request->provider,
+            'provider' => $provider,
             'callback_url' => $request->callback_url,
-            'settings' => $request->settings,
+            'settings' => $settings,
             'api_key' => (string) Str::uuid(),
             'status' => 'active',
             'active' => true,
@@ -62,8 +94,22 @@ class WalletManagementController extends Controller
             'message' => 'Carteira criada com sucesso.',
             'data' => $wallet,
         ], 201);
-    }
 
+        // 4️⃣ Retorno em formato padronizado
+        // return response()->json([
+        //     'success' => true,
+        //     'message' => 'Carteira criada com sucesso.',
+        //     'data' => [
+        //         'id' => $wallet->id,
+        //         'name' => $wallet->name,
+        //         'provider' => $wallet->provider,
+        //         'api_key' => $wallet->api_key,
+        //         'callback_url' => $wallet->callback_url,
+        //         'balance' => $wallet->balance,
+        //         'status' => $wallet->status,
+        //     ]
+        // ], 201);
+    }
     #Detalhes de uma carteira
     public function show(Wallet $wallet)
     {

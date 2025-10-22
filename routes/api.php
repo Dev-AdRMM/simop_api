@@ -30,14 +30,15 @@ Route::prefix('v1')->middleware(['verify.simop.apikey'])->group(function () {
 
     #Gestão de Carteiras - SIMOP
     Route::prefix('wallets')->group(function () {
-        Route::get('/', [WalletController::class, 'index']);
-        Route::post('/', [WalletController::class, 'store']);
-        Route::get('/{wallet}', [WalletController::class, 'show']);
-        Route::put('/{wallet}', [WalletController::class, 'update']);
-        Route::delete('/{wallet}', [WalletController::class, 'destroy']);
+        Route::get('/', [WalletManagementController::class, 'index']);
+        Route::post('/', [WalletManagementController::class, 'store']);
 
-        Route::post('/{wallet}/suspend', [WalletController::class, 'suspend']);
-        Route::post('/{wallet}/activate', [WalletController::class, 'activate']);
+        Route::get('/{wallet}', [WalletManagementController::class, 'show']);
+        Route::put('/{wallet}', [WalletManagementController::class, 'update']);
+        Route::delete('/{wallet}', [WalletManagementController::class, 'destroy']);
+
+        Route::post('/{wallet}/suspend', [WalletManagementController::class, 'suspend']);
+        Route::post('/{wallet}/activate', [WalletManagementController::class, 'activate']);
     });
 });
 
