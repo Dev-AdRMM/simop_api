@@ -12,7 +12,7 @@ use Carbon\Carbon;
 
 class VerificationController extends Controller
 {
-    public function verify(Request $request)
+    public function verifyEmail(Request $request)
     {
         $request->validate([
             'email' => 'required|email',

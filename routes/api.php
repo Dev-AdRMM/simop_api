@@ -7,15 +7,22 @@ use App\Http\Controllers\Api\MpesaPaymentController;
 
 use App\Http\Controllers\Api\WalletManagementController;
 
-use App\Http\Controllers\Auth\AuthTokenController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\VerificationController;
+use App\Http\Controllers\Auth\ResendVerificationController;
+use App\Http\Controllers\Auth\AuthTokenController;
+use App\Http\Controllers\Auth\LoginController;
 
 
 Route::prefix('v1/auth')->group(function () {
-    Route::post('/register', [RegisterController::class, 'register']);
-    Route::post('/verify', [VerificationController::class, 'verify']);
-    Route::post('/token', [AuthTokenController::class, 'getToken']);
+    Route::post('/register', [RegisterController::class, 'registerUser']);
+    Route::post('/verify_email', [VerificationController::class, 'verifyEmail']);
+    Route::post('/resend_code', [ResendVerificationController::class, 'resendCode']);
+
+    Route::post('/get_token', [AuthTokenController::class, 'getToken']);
+    
+    Route::post('/login', [LoginController::class, 'login']);
+    Route::post('/logout', [LoginController::class, 'logout']);
 });
 
 Route::prefix('v1')->middleware(['simop.user'])->group(function () {
