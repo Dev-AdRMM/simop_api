@@ -5,18 +5,31 @@ namespace App\Services\PaymentGateways;
 use Illuminate\Support\Str;
 use Karson\MpesaPhpSdk\Mpesa;
 use Illuminate\Support\Facades\Log;
+use App\Models\Wallet;
 
 class MpesaPaymentService
 {
     private $mpesa;
+    private $wallet;
 
-    public function __construct()
+    public function __construct(Wallet $wallet)
     {
+        $this->wallet = $wallet;
+        $this->setupFromDatabase();
+    }
+
+    /**
+     * Carrega as credenciais do banco de dados
+     */
+    private function setupFromDatabase(): void
+    {
+        $settings = $this->wallet->settings ?? [];
+
         $this->mpesa = new Mpesa();
-        $this->mpesa->setApiKey(config('mpesa.api_key'));
-        $this->mpesa->setPublicKey(config('mpesa.public_key'));
-        $this->mpesa->setServiceProviderCode(config('mpesa.service_provider_code'));
-        $this->mpesa->setEnv(config('mpesa.env')); // 'sandbox' ou 'live'
+        $this->mpesa->setApiKey($settings['api_key'] ?? '');
+        $this->mpesa->setPublicKey($settings['public_key'] ?? '');
+        $this->mpesa->setServiceProviderCode($settings['service_provider_code'] ?? '');
+        $this->mpesa->setEnv($settings['env'] ?? 'sandbox');
     }
 
     /**
@@ -29,6 +42,7 @@ class MpesaPaymentService
             $transaction = $this->mpesa->c2b($invoiceNumber, $msisdn, $amount, $reference);
 
             Log::info('M-Pesa Debit Request', [
+                'wallet' => $this->wallet->name,
                 'invoice' => $invoiceNumber,
                 'msisdn' => $msisdn,
                 'amount' => $amount,
@@ -61,7 +75,10 @@ class MpesaPaymentService
                 'message' => 'Resposta inesperada da API M-Pesa.',
             ];
         } catch (\Throwable $e) {
-            Log::error('Erro no MpesaPaymentService@debitRequest', ['error' => $e->getMessage()]);
+            Log::error('Erro no MpesaPaymentService@debitRequest', [
+                'wallet' => $this->wallet->name,
+                'error' => $e->getMessage()
+            ]);
             return [
                 'status' => 'error',
                 'message' => 'Erro interno no processamento do pagamento.',
@@ -69,22 +86,23 @@ class MpesaPaymentService
         }
     }
 
-    /**
-     * Consulta o status de uma transação
-     */
     public function getTransactionStatus(string $transactionId): array
     {
         try {
             $response = $this->mpesa->status($transactionId);
 
             Log::info('M-Pesa Debit Status', [
+                'wallet' => $this->wallet->name,
                 'transaction_id' => $transactionId,
                 'response' => $response,
             ]);
 
             return (array) $response;
         } catch (\Throwable $e) {
-            Log::error('Erro no MpesaPaymentService@debitStatus', ['error' => $e->getMessage()]);
+            Log::error('Erro no MpesaPaymentService@getTransactionStatus', [
+                'wallet' => $this->wallet->name,
+                'error' => $e->getMessage(),
+            ]);
             return [
                 'status' => 'error',
                 'message' => 'Erro ao consultar o status da transação.',
@@ -110,6 +128,6 @@ class MpesaPaymentService
      */
     private function generateReference(): string
     {
-         return Str::upper(Str::random(10));
+        return Str::upper(Str::random(10));
     }
 }

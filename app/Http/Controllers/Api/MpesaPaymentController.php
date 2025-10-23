@@ -8,37 +8,34 @@ use Illuminate\Http\Request;
 
 use App\Traits\ApiLogsTransactions;
 use Illuminate\Support\Facades\Log;
+use App\Models\Wallet;
+
 
 class MpesaPaymentController extends Controller
 {
     use ApiLogsTransactions;
 
-    protected $mpesa;
-
-    public function __construct(MpesaPaymentService $mpesa)
-    {
-        $this->mpesa = $mpesa;
-    }
-
-    /**
-     * 🔸 Efetua um débito (C2B)
-     */
     public function debit_request(Request $request)
     {
         $request->validate([
+            'wallet_id' => 'required|uuid',
             'msisdn' => 'required|regex:/^258\d{9}$/',
             'amount' => 'required|numeric|min:1',
             'invoiceNumber' => 'required|string',
         ]);
 
-        $response = $this->mpesa->debitRequest(
+        $wallet = Wallet::findOrFail($request->wallet_id);
+
+        $mpesa = new MpesaPaymentService($wallet);
+
+        $response = $mpesa->debitRequest(
             $request->invoiceNumber,
-            $request->msisdn, 
-            $request->amount 
+            $request->msisdn,
+            $request->amount
         );
 
         $this->logApi(
-            'mpesa',
+            strtoupper($wallet->provider . ' - ' . $wallet->name),
             '/api/v1/mpesa/debit_request',
             $request->method(),
             $request->headers->all(),
@@ -50,12 +47,11 @@ class MpesaPaymentController extends Controller
             $request->amount
         );
 
-        return response($response, 200)
-            ->header('Content-Type', 'application/xml');
+        return response()->json($response)
+         ->header('Content-Type', 'application/xml');
     }
 
-
-    /**
+        /**
      * 🔸 Consulta status de uma transação
      */
     public function debit_status(Request $request)
@@ -119,5 +115,4 @@ class MpesaPaymentController extends Controller
         return response($response, 200)
             ->header('Content-Type', 'application/xml');
     }
-
 }
