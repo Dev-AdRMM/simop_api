@@ -7,6 +7,32 @@ use App\Http\Controllers\Api\MpesaPaymentController;
 
 use App\Http\Controllers\Api\WalletManagementController;
 
+use App\Http\Controllers\Auth\AuthTokenController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\VerificationController;
+
+
+Route::prefix('v1/auth')->group(function () {
+    Route::post('/register', [RegisterController::class, 'register']);
+    Route::post('/verify', [VerificationController::class, 'verify']);
+    Route::post('/token', [AuthTokenController::class, 'getToken']);
+});
+
+Route::prefix('v1')->middleware(['simop.user'])->group(function () {
+    #Gestão de Carteiras - SIMOP
+    Route::prefix('wallets')->group(function () {
+        Route::get('/', [WalletManagementController::class, 'index']);
+        Route::post('/', [WalletManagementController::class, 'store']);
+
+        Route::get('/{wallet}', [WalletManagementController::class, 'show']);
+        Route::put('/{wallet}', [WalletManagementController::class, 'update']);
+        Route::delete('/{wallet}', [WalletManagementController::class, 'destroy']);
+
+        Route::post('/{wallet}/suspend', [WalletManagementController::class, 'suspend']);
+        Route::post('/{wallet}/activate', [WalletManagementController::class, 'activate']);
+    });
+});
+
 Route::prefix('v1')->middleware(['verify.simop.apikey'])->group(function () {
 
     #Pagamentos - Rotas das Operadoras
