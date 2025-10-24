@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\UserVerification;
@@ -50,8 +51,15 @@ class ResendVerificationController extends Controller
             'expires_at' => Carbon::now()->addMinutes(15),
         ]);
 
-        // 🔹 Envia o email novamente
-        Mail::to($user->email)->send(new VerifyUserMail($code));
+        # Envia o email novamente
+        try {
+            Mail::to($user->email)->send(new VerifyUserMail($code));
+        } catch (TransportExceptionInterface $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Falha ao enviar email: ' . $e->getMessage(),
+            ], 500);
+        }
 
         return response()->json([
             'status' => 'success',

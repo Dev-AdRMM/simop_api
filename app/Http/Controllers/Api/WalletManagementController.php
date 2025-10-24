@@ -11,7 +11,7 @@ use App\Models\Wallet;
 
 class WalletManagementController extends Controller
 {
-    #Lista todas as carteiras do sistema (ou de um cliente específico)
+    # Lista todas as carteiras do sistema (ou de um cliente específico)
     public function index(Request $request)
     {
         $query = Wallet::query();
@@ -32,7 +32,7 @@ class WalletManagementController extends Controller
         ], 200);
     }
 
-    #Cria uma nova carteira
+    # Cria uma nova carteira
     public function store(Request $request)
     {
         $request->validate([
@@ -46,7 +46,7 @@ class WalletManagementController extends Controller
         $provider = strtolower($request->provider);
         $settings = $request->settings;
 
-        // 🔍 Validações específicas por provedor
+        # Validações específicas por provedor
         switch ($provider) {
             case 'mpesa':
                 $request->validate([
@@ -74,7 +74,7 @@ class WalletManagementController extends Controller
                 break;
         }
 
-        // 💾 Criação da carteira
+        # Criação da carteira
         $wallet = Wallet::create([
             'user_id' => $request->user_id,
             'name' => strtoupper($request->name),
@@ -95,22 +95,9 @@ class WalletManagementController extends Controller
             'data' => $wallet,
         ], 201);
 
-        // 4️⃣ Retorno em formato padronizado
-        // return response()->json([
-        //     'success' => true,
-        //     'message' => 'Carteira criada com sucesso.',
-        //     'data' => [
-        //         'id' => $wallet->id,
-        //         'name' => $wallet->name,
-        //         'provider' => $wallet->provider,
-        //         'api_key' => $wallet->api_key,
-        //         'callback_url' => $wallet->callback_url,
-        //         'balance' => $wallet->balance,
-        //         'status' => $wallet->status,
-        //     ]
-        // ], 201);
     }
-    #Detalhes de uma carteira
+
+    # Detalhes de uma carteira
     public function show(Wallet $wallet)
     {
         return response()->json([
@@ -119,7 +106,7 @@ class WalletManagementController extends Controller
         ], 200);
     }
 
-    #Atualiza informações de uma carteira
+    # Atualiza informações de uma carteira
     public function update(Request $request, Wallet $wallet)
     {
         $request->validate([
@@ -139,7 +126,7 @@ class WalletManagementController extends Controller
         ], 200);
     }
 
-    #Suspende uma carteira
+    # Suspende uma carteira
     public function suspend(Request $request, Wallet $wallet)
     {
         $request->validate([
@@ -155,7 +142,7 @@ class WalletManagementController extends Controller
         ], 200);
     }
 
-    #Reativa uma carteira
+    # Reativa uma carteira
     public function activate(Wallet $wallet)
     {
         $wallet->activate();
@@ -167,7 +154,7 @@ class WalletManagementController extends Controller
         ], 200);
     }
 
-    #Elimina (soft delete) uma carteira
+    # Elimina (soft delete) uma carteira
     public function destroy(Wallet $wallet)
     {
         $wallet->delete();

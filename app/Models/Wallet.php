@@ -33,7 +33,7 @@ class Wallet extends Model
         'balance' => 'decimal:2',
     ];
 
-    // 🔹 Gera automaticamente uma API Key única ao criar
+    # Gera automaticamente uma API Key única ao criar
     protected static function booted()
     {
         static::creating(function ($wallet) {
@@ -47,19 +47,19 @@ class Wallet extends Model
         });
     }
 
-    // 🔹 Relação com o cliente dono da carteira
+    # Relação com o cliente dono da carteira
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // 🔹 Escopo: carteiras operacionais
+    # Escopo: carteiras operacionais
     public function scopeActive($query)
     {
         return $query->where('active', true)->where('status', 'active');
     }
 
-    // 🔹 Método: suspender carteira
+    # Método: suspender carteira
     public function suspend(string $reason = 'Suspensão administrativa'): void
     {
         $this->update([
@@ -68,7 +68,7 @@ class Wallet extends Model
         ]);
     }
 
-    // 🔹 Método: reativar carteira
+    #Método: reativar carteira
     public function activate(): void
     {
         $this->update([

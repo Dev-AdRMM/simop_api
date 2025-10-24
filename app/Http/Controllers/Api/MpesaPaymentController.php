@@ -51,9 +51,7 @@ class MpesaPaymentController extends Controller
          ->header('Content-Type', 'application/xml');
     }
 
-        /**
-     * 🔸 Consulta status de uma transação
-     */
+     # Consulta status de uma transação
     public function debit_status(Request $request)
     {
         $request->validate([
@@ -69,7 +67,7 @@ class MpesaPaymentController extends Controller
 
         $status = $response['status'] ?? 'checked';
 
-        // 📌 Log da consulta
+        # Log da consulta
         $this->logApi(
             'mpesa',
             '/api/v1/mpesa/debit_status',
@@ -85,9 +83,7 @@ class MpesaPaymentController extends Controller
             ->header('Content-Type', 'application/xml');
     }
 
-    /**
-     * 🔸 Callback recebido da API M-Pesa
-     */
+     # Callback recebido da API M-Pesa
     public function callback(Request $request)
     {
         $data = $request->all();

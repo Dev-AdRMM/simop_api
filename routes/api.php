@@ -9,18 +9,27 @@ use App\Http\Controllers\Api\WalletManagementController;
 
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\VerificationController;
-use App\Http\Controllers\Auth\ResendVerificationController;
+#use App\Http\Controllers\Auth\ResendVerificationController;
 use App\Http\Controllers\Auth\AuthTokenController;
+
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+
 use App\Http\Controllers\Auth\LoginController;
 
 
 Route::prefix('v1/auth')->group(function () {
     Route::post('/register', [RegisterController::class, 'registerUser']);
     Route::post('/verify_email', [VerificationController::class, 'verifyEmail']);
-    Route::post('/resend_code', [ResendVerificationController::class, 'resendCode']);
+    Route::post('/resend_code', [VerificationController::class, 'resendCode']);
+
+    #Route::post('/resend_code', [ResendVerificationController::class, 'resendCode']);
 
     Route::post('/get_token', [AuthTokenController::class, 'getToken']);
     
+    Route::post('/forgot_password', [ForgotPasswordController::class, 'sendResetCode']);
+    Route::post('/reset_password', [ResetPasswordController::class, 'resetPassword']);
+
     Route::post('/login', [LoginController::class, 'login']);
     Route::post('/logout', [LoginController::class, 'logout']);
 });

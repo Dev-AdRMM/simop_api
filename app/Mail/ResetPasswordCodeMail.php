@@ -6,7 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class VerifyUserMail extends Mailable
+class ResetPasswordCodeMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -20,7 +20,7 @@ class VerifyUserMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Código de Verificação - SIMOP')
+        return $this->subject('Código para redefinir sua senha')
             ->view('simop_serverSide.pages.auth.emails.verify_email_user')
             ->with(['code' => $this->code]);
     }

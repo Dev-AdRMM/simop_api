@@ -11,9 +11,7 @@ use App\Models\User;
 
 class LoginController extends Controller
 {
-    /**
-     * Faz login e retorna um token de sessão
-     */
+     # Faz login e retorna um token de sessão
     public function login(Request $request)
     {
         $request->validate([
@@ -23,7 +21,7 @@ class LoginController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        // 🔹 Verifica se existe
+        # Verifica se existe
         if (!$user) {
             return response()->json([
                 'status' => 'error',
@@ -31,7 +29,7 @@ class LoginController extends Controller
             ], 401);
         }
 
-        // 🔹 Confere senha
+        # Confere senha
         if (!Hash::check($request->password, $user->password)) {
             return response()->json([
                 'status' => 'error',
@@ -39,7 +37,7 @@ class LoginController extends Controller
             ], 401);
         }
 
-        // 🔹 Verifica se a conta está validada
+        # Verifica se a conta está validada
         if (!$user->email_verified_at) {
             return response()->json([
                 'status' => 'error',
@@ -47,10 +45,10 @@ class LoginController extends Controller
             ], 403);
         }
 
-        // 🔹 Gera token de sessão (válido até logout)
+        # Gera token de sessão (válido até logout)
         $token = Str::random(60);
 
-        // Pode salvar no campo "remember_token" ou numa tabela separada
+        # Pode salvar no campo "remember_token" ou numa tabela separada
         $user->remember_token = hash('sha256', $token);
         $user->save();
 
@@ -67,9 +65,7 @@ class LoginController extends Controller
         ]);
     }
 
-    /**
-     * Faz logout e invalida o token
-     */
+    # Faz logout e invalida o token
     public function logout(Request $request)
     {
         $request->validate([
