@@ -24,7 +24,7 @@ class VerifySimopUserApiKey
         if (!$user) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'API Key inválida.'
+                'message' => 'API Key de utilizador inválida.'
             ], 401);
         }
 

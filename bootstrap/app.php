@@ -16,7 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         //
         $middleware->alias([
             'verify.simop.apikey' => \App\Http\Middleware\VerifySimopApiKey::class,
-            'simop.user' => \App\Http\Middleware\VerifySimopUserApiKey::class,
+            'verify.simop.user' => \App\Http\Middleware\VerifySimopUserApiKey::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -25,7 +25,7 @@ Route::prefix('v1/auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout']);
 });
 
-Route::prefix('v1')->middleware(['simop.user'])->group(function () {
+Route::prefix('v1')->middleware(['verify.simop.user'])->group(function () {
     #Gestão de Carteiras - SIMOP
     Route::prefix('wallets')->group(function () {
         Route::get('/', [WalletManagementController::class, 'index']);
@@ -59,19 +59,6 @@ Route::prefix('v1')->middleware(['verify.simop.apikey'])->group(function () {
         Route::post('/debit_request', [EmolaPaymentController::class, 'debit_request']);
         Route::post('/debit_status', [EmolaPaymentController::class, 'debit_status']);
         Route::post('/callback', [EmolaPaymentController::class, 'callback']);
-    });
-
-    #Gestão de Carteiras - SIMOP
-    Route::prefix('wallets')->group(function () {
-        Route::get('/', [WalletManagementController::class, 'index']);
-        Route::post('/', [WalletManagementController::class, 'store']);
-
-        Route::get('/{wallet}', [WalletManagementController::class, 'show']);
-        Route::put('/{wallet}', [WalletManagementController::class, 'update']);
-        Route::delete('/{wallet}', [WalletManagementController::class, 'destroy']);
-
-        Route::post('/{wallet}/suspend', [WalletManagementController::class, 'suspend']);
-        Route::post('/{wallet}/activate', [WalletManagementController::class, 'activate']);
     });
 });
 

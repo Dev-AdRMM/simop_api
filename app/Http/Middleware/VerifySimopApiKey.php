@@ -23,7 +23,7 @@ class VerifySimopApiKey
         if (!$apiKey) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'API Key não fornecida. Use Authorization: Bearer {api_key}.'
+                'message' => 'API Key da carteira não fornecida. Use Authorization: Bearer {api_key}.'
             ], 401);
         }
 
@@ -35,7 +35,7 @@ class VerifySimopApiKey
         if (!$wallet) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'API Key inválida ou carteira inativa.'
+                'message' => 'API Key da carteira inválida ou carteira inativa.'
             ], 401);
         }
 
